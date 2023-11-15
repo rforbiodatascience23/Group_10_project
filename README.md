@@ -19,6 +19,8 @@ The dataset was sourced from Kaggle, representing a typical dataset employed for
 
 To induce this 'unclean' state, a new separator was introduced between each value, observation, and parameter, resulting in a clustering effect within the CSV file. Subsequently, the dataset was partitioned into three distinct files. This division was necessitated by the repetition of each of the 10 measurements in the document, which are categorized into mean, standard error (SE), and worst.
 
+original data: https://www.kaggle.com/datasets/uciml/breast-cancer-wisconsin-data/data 
+
 ### Data Files
 
 Description of the three files created during the data preparation phase.
