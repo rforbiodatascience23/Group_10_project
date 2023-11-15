@@ -31,13 +31,17 @@ Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796,
 ## Materials and Method
 
 ```{r}
-# print the pipeline
-# dont know how
+# print pipeline here
+# print an overview of the data above
 ```
 
-## Results
+## Analysis 1 - PCA unsupervised
 
-efrgtnh
+The two analysis
+
+## Analysis 2 - Supervised ML
+
+The two analysis
 
 ## Discussion
 
