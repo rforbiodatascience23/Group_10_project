@@ -14,33 +14,19 @@ Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796,
 ::: incremental
 -   The data set is based on breast cancer sample.
 
--   Split into 10 parameters for; mean, SE, worst 
+-   Split into 10 parameters for; mean, SE, worst
 
 -   The state of the patients cancer is stated, whether it is benign or malignant.
 :::
 :::
 
 ::: {.column width="60%"}
-```{r echo=FALSE, out.width = "80%", fig.align = "right"}
-knitr::include_graphics("images/R_pipeline.png")
+![Work pipeline](R_pipeline.png)
 
-```
 :::
 :::
 
 
-
-### Data parameters:
-
--   Mean
-
--   SE
-
--   Worst
-
-```{r}
-# print data as they are split
-```
 
 ## Materials and Method
 
