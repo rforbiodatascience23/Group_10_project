@@ -1,0 +1,15 @@
+---
+title: "PCA"
+format: html
+editor: visual
+---
+
+## PCA
+
+## Loading libraries
+
+```{r}
+library(tidyverse)
+library(broom)  # devtools::install_github("tidymodels/broom")
+library(cowplot)
+```

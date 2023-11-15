@@ -1,0 +1,68 @@
+---
+title: "Clean"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(dplyr)
+```
+
+
+Seperated dataset: First part 
+```{r}
+cancer_data_1_tibble <- read_tsv('/net/pupil1/home/people/s194681/projects/Group_10_project/data/01_dat_load_1.tsv') |> 
+  as_tibble() |>
+  rename_all(tolower) |>
+  rename_all(~ gsub("[^[:alnum:]]", " ", .)) |>
+  mutate_all(~ str_replace_all(., '"', ''))  |> 
+
+print(cancer_data_1_tibble)
+
+```
+
+Second part:
+```{r}
+cancer_data_2_tibble <- read_tsv('/net/pupil1/home/people/s194681/projects/Group_10_project/data/01_dat_load_2.tsv') |> 
+  as_tibble() |>
+  rename_all(tolower) |>
+  rename_all(~ gsub("[^[:alnum:]]", " ", .)) |>
+  mutate_all(~ str_replace_all(., '"', ''))  |> 
+
+print(cancer_data_2_tibble)
+
+
+
+```
+
+
+Third part:
+```{r}
+
+cancer_data_3_tibble <- read_tsv('/net/pupil1/home/people/s194681/projects/Group_10_project/data/01_dat_load_3.tsv') |> 
+  as_tibble() |>
+  rename_all(tolower) |>
+  rename_all(~ gsub("[^[:alnum:]]", " ", .)) |>
+  mutate_all(~ str_replace_all(., '"', ''))  |> 
+
+print(cancer_data_3_tibble)
+```
+
+Join dataset
+
+```{r}
+
+full_data <- cancer_data_1_tibble |> 
+  full_join(cancer_data_2_tibble, by = 'id ') |> 
+  full_join(cancer_data_3_tibble, by = 'id ')|>
+  as.tibble() |>
+  mutate(`diagnosis ` = case_when(`diagnosis `== "M" ~ 0,
+    `diagnosis `== "B" ~ 1)) |> 
+  write_tsv(file = "/net/pupil1/home/people/s194681/projects/Group_10_project/data/02_dat_clean.tsv")
+
+print(full_data)
+
+```
+
+

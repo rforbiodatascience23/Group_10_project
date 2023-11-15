@@ -1,0 +1,38 @@
+---
+title: "Describe data"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(dplyr)
+```
+
+
+Dataset: Breast Cancer Wisconsin (Diagnostic) Data Set. 
+The dataset is made to predict whether breast cancer in patients are benign or malignant. The attributes are computed from a digitized image of a fine needle aspirate of a breast mass. They describe characteristics of the cell nuclei present in the image. 
+There are 31 different attributes from these images based on 569 patients. The class distribution is 357 benign and 212 malignant cases. There are no NA's. 
+Each patient case is distinguished with an ID number and a diagnostic attribute: B for benign and M for malignant. 
+For each cell nucleus there are 10 features computed:
+- Radius 
+- Standard deviation of the gray-scaled values (texture)
+- Perimeter 
+- Area 
+- Local variation in radius lengths (smoothness)
+- Local variation in radius lengths (compactness)
+- Concave portions of the contour (concavity)
+- Number of concave portions in contour (concave points)
+- Symmetry
+- Fractal dimension
+For these each of these attributes 3 numbers were calculated: mean, standard error and the worst (mean of the 3 largest values). 
+These 3 categories of datapoints are assembled to one big dataset as seen below. 
+
+```{r}
+cancer_dataset <- read_tsv('/net/pupil1/home/people/s194681/projects/Group_10_project/data/02_dat_clean.tsv')
+
+print(cancer_dataset)
+
+```
+
+
