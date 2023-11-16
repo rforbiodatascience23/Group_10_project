@@ -12,14 +12,14 @@ library(dplyr)
 Load datasets
 
 ```{r}
-cancer_data_1 <- read.table('data/data_1.csv', header = TRUE, sep = ",", quote = "", check.names = FALSE) |> 
-  write_tsv(file = "/net/pupil1/home/people/s194681/projects/Group_10_project/data/01_dat_load_1.tsv")
+cancer_data_1 <- read.table('/net/pupil1/home/people/s194681/projects/Group_project_10/data_1.csv', header = TRUE, sep = ",", quote = "", check.names = FALSE) |> 
+  write_tsv(file = "/net/pupil1/home/people/s194681/projects/Group_project_10/01_dat_load_1.tsv")
 
-cancer_data_2 <- read.table('data/data_2.csv', header = TRUE, sep = ",", quote = "", check.names = FALSE) |> 
-  write_tsv(file = "/net/pupil1/home/people/s194681/projects/Group_10_project/data/01_dat_load_2.tsv")
+cancer_data_2 <- read.table('/net/pupil1/home/people/s194681/projects/Group_project_10/data_2.csv', header = TRUE, sep = ",", quote = "", check.names = FALSE) |> 
+  write_tsv(file = "/net/pupil1/home/people/s194681/projects/Group_project_10/01_dat_load_2.tsv")
 
-cancer_data_3 <- read.table('data/data_3.csv', header = TRUE, sep = ",", quote = "", check.names = FALSE) |> 
-  write_tsv(file = "/net/pupil1/home/people/s194681/projects/Group_10_project/data/01_dat_load_3.tsv")
+cancer_data_3 <- read.table('/net/pupil1/home/people/s194681/projects/Group_project_10/data_3.csv', header = TRUE, sep = ",", quote = "", check.names = FALSE) |> 
+  write_tsv(file = "/net/pupil1/home/people/s194681/projects/Group_project_10/01_dat_load_3.tsv")
 
 
 ```

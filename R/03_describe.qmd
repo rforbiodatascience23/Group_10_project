@@ -29,9 +29,9 @@ For these each of these attributes 3 numbers were calculated: mean, standard err
 These 3 categories of datapoints are assembled to one big dataset as seen below. 
 
 ```{r}
-cancer_dataset <- read_tsv('/net/pupil1/home/people/s194681/projects/Group_10_project/data/02_dat_clean.tsv')
+cancer_dataset_clean <- read_tsv('/net/pupil1/home/people/s194681/projects/Group_project_10/02_dat_clean.tsv')
 
-print(cancer_dataset)
+print(cancer_dataset_clean)
 
 ```
 
