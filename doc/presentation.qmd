@@ -37,7 +37,7 @@ Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796,
 
 ## Analysis 1 - PCA unsupervised
 
-The two analysis
+The two analysis m
 
 ## Analysis 2 - Supervised ML
 
