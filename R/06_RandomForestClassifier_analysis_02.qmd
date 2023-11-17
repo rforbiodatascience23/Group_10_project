@@ -1,0 +1,97 @@
+---
+title: "RandomForestClassifier"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+```
+
+## Data Preparation
+
+```{r}
+# Assuming you have a data frame called cancer_data_clean
+
+# Change the column names
+cancer_data_clean <- cancer_data_clean %>%
+  rename_all(~gsub("\\.", "_", .))
+
+# Display unique values in the 'diagnosis' column
+cancer_data_clean %>%
+  select(diagnosis) %>%
+  distinct()
+
+# Convert 'diagnosis' to a factor
+cancer_data_clean <- cancer_data_clean %>%
+  mutate(diagnosis = as.factor(diagnosis))
+```
+
+## Random Forest Classifier
+
+```{r}
+# Set seed for reproducibility
+set.seed(123)
+
+# Split the data into training and testing sets
+split_index <- sample(1:nrow(cancer_data_clean), 0.8 * nrow(cancer_data_clean))
+trainData <- cancer_data_clean %>% slice(split_index)
+testData <- cancer_data_clean %>% slice(-split_index)
+
+# Set up 10-fold cross-validation
+set.seed(123)
+fold_size <- floor(nrow(cancer_data_clean) / 10)
+folds <- crossv_mc(cancer_data_clean, prop = 0.9, times = 10)
+
+# Initialize an empty data frame to store ROC data
+roc_data <- data.frame()
+
+# Cross-validation
+for (i in seq_along(folds)) {
+  test_indices <- folds[[i]]
+  train_indices <- setdiff(seq_len(nrow(cancer_data_clean)), test_indices)
+  
+  # Splitting data
+  trainData <- cancer_data_clean %>% slice(train_indices)
+  testData <- cancer_data_clean %>% slice(test_indices)
+  
+  # Train the model
+  model <- randomForest(diagnosis ~ ., data = trainData)
+  
+  # Make predictions
+  pred_probs <- predict(model, testData, type = "prob")
+  
+  # Initialize an empty data frame to store ROC data for this fold
+  roc_data_fold <- data.frame()
+  
+  # Compute TPR and FPR for ROC
+  for (threshold in seq(0, 1, by = 0.01)) {
+    predicted_class <- ifelse(pred_probs[, 'M'] > threshold, 'M', 'B')
+    cm <- table(Predicted = factor(predicted_class, levels = c('B', 'M')),
+                Actual = factor(testData$diagnosis, levels = c('B', 'M')))
+    
+    tpr <- cm['M', 'M'] / sum(cm[, 'M'])
+    fpr <- cm['M', 'B'] / sum(cm[, 'B'])
+    
+    # Append data to roc_data_fold
+    roc_data_fold <- bind_rows(roc_data_fold, data.frame(FPR = fpr, TPR = tpr, Threshold = threshold, Fold = i))
+  }
+  
+  # Append data for this fold to roc_data
+  roc_data <- bind_rows(roc_data, roc_data_fold)
+}
+```
+
+## Visualize the performance
+
+```{r}
+# Plot ROC curve using ggplot2
+ggplot(roc_data, aes(x = FPR, y = TPR, group = as.factor(Fold), color = as.factor(Fold))) +
+  geom_line(na.rm = TRUE) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  labs(title = "ROC Curve", x = "False Positive Rate", y = "True Positive Rate", color = "Fold") +
+  theme_minimal()
+
+# Display summary of roc_data
+summary(roc_data)
+```
