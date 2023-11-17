@@ -2,12 +2,12 @@
 title: "Analysis of Breast cancer samples"
 format: 
   revealjs:
-    theme: simple
+    theme: serif
 editor: visual
 Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796, Michelle Sollok s194681, Pelagia Derizioti s222822
 ---
 
-### Introduction {.smaller}
+## Introduction {.smaller}
 
 ::: columns
 ::: {.column width="40%"}
