@@ -7,7 +7,7 @@ editor: visual
 Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796, Michelle Sollok s194681, Pelagia Derizioti s222822
 ---
 
-## Introduction {.smaller}
+## Introductionsss {.smaller}
 
 ::: columns
 ::: {.column width="40%"}
