@@ -36,6 +36,8 @@ tidy_correlation <- correlation_matrix |>
   pivot_longer(cols = starts_with("Var"), names_to = "Variable", values_to = "Value")
   gather(key = "variable2", value = "correlation", -variable1)
 print(tidy_correlation)
+
+
 ggplot_heatmap <- ggplot(tidy_correlation, aes(variable1, variable2, fill = correlation)) +
   geom_tile(color = "white") +
   scale_fill_gradient2(low = "blue", 
@@ -59,7 +61,9 @@ library(ggplot2)
 # Assuming cancer_dataset contains numeric variables
 correlation_matrix <- cor(cancer_dataset |>
                              select_if(is.numeric) |>
-                             select(-id)) 
+                             select(-diagnosis) |>
+                             select(-id))
+        
 
   
 # Reshape the correlation matrix for plotting
@@ -79,7 +83,7 @@ gg <- ggplot(tidy_correlation, aes(Variable1, Variable2, fill = Correlation)) +
   labs(title = "Correlation Heatmap of Numeric Variables")
 
 # Save the ggplot as a PNG file in the specified folder
-# ggsave(file.path(folder_path, file_name), gg, width = 8, height = 6, dpi = 300)
+ggsave(file.path(folder_path, file_name), gg, width = 8, height = 6, dpi = 300)
 
 
 ```
