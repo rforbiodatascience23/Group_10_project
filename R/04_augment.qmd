@@ -22,7 +22,7 @@ cancer_dataset_clean_aug_long_nested <- cancer_dataset_clean_aug_long |>
   nest() |>
   ungroup()
 
-cancer_dataset_clean_aug_long
+cancer_dataset_clean_aug_long 
 ```
 
 
