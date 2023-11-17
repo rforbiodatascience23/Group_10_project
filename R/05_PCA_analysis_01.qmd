@@ -13,3 +13,39 @@ library(tidyverse)
 library(broom)  # devtools::install_github("tidymodels/broom")
 library(cowplot)
 ```
+
+## Read data
+
+```{r}
+cancer_dataset <- read_tsv("/net/pupil1/home/people/s195796/projects/Group_10_project/R/02_dat_clean.tsv")
+print(cancer_dataset)
+```
+
+```{r}
+cancer_dataset <- cancer_dataset |>
+  select(!id) |>
+  mutate(diagnosis = case_when(diagnosis == 0 ~ "M",
+    diagnosis == 1 ~ "B"))
+
+pca_fit <- cancer_dataset |> 
+  select(where(is.numeric)) |> # retain only numeric columns
+  prcomp(scale = TRUE) # do PCA on scaled data
+
+```
+
+```{r}
+pca_fit |>
+  augment(cancer_dataset) |> # add original dataset back in
+  ggplot(aes(.fittedPC1, .fittedPC2, color = diagnosis)) + 
+  geom_point(size = 1.5) +
+  scale_color_manual(
+    values = c(M = "#D55E00", B = "#0072B2")
+  ) +
+  theme_half_open(12) + background_grid()
+```
+
+```{r}
+# extract rotation matrix
+pca_fit 
+  tidy(matrix = "rotation")
+```
