@@ -14,21 +14,17 @@ Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796,
 ::: {.incremental .smaller}
 -   The data set is based on breast cancer sample.
 -   Split into 10 parameters for:
-    - mean
-    - SE 
-    - worst
+    -   mean
+    -   SE
+    -   worst
 -   The state of the patients cancer is stated, whether it is benign or malignant.
 :::
 :::
 
-
 ::: {.column width="60%"}
 ![Overview of parameters - Mean](boxplot_mean.png)
-
 :::
 :::
-
-
 
 ## Materials and Method
 
