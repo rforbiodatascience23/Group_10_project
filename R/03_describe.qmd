@@ -50,6 +50,40 @@ print(ggplot_heatmap)
 
 ```
 
+```{r}
+# Name of specific figure
+file_name <- "Heatmap.png"
+
+library(ggplot2)
+
+# Assuming cancer_dataset contains numeric variables
+correlation_matrix <- cor(cancer_dataset |>
+                             select_if(is.numeric) |>
+                             select(-id)) 
+
+  
+# Reshape the correlation matrix for plotting
+tidy_correlation <- as.data.frame(as.table(correlation_matrix))
+names(tidy_correlation) <- c("Variable1", "Variable2", "Correlation")
+
+# Create heatmap
+gg <- ggplot(tidy_correlation, aes(Variable1, Variable2, fill = Correlation)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(low = "blue", 
+                       mid = "white", 
+                       high = "red", 
+                       midpoint = 0, 
+                       limits = c(-1, 1)) +
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "Correlation Heatmap of Numeric Variables")
+
+# Save the ggplot as a PNG file in the specified folder
+# ggsave(file.path(folder_path, file_name), gg, width = 8, height = 6, dpi = 300)
+
+
+```
+
 ## Boxplot over data
 
 ### path for saved png
