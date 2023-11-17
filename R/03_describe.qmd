@@ -7,6 +7,7 @@ editor: visual
 ```{r}
 library(tidyverse)
 library(dplyr)
+library(ggplot2)
 ```
 
 
@@ -29,10 +30,223 @@ For these each of these attributes 3 numbers were calculated: mean, standard err
 These 3 categories of datapoints are assembled to one big dataset as seen below. 
 
 ```{r}
+<<<<<<< HEAD
 cancer_dataset_clean <- read_tsv('/net/pupil1/home/people/s194681/projects/Group_project_10/02_dat_clean.tsv')
+=======
+#setwd("Users/matildeuth/Documents/R_bio_data")
+cancer_dataset <- read_tsv("/home/people/s223094/project/Group_project_10/R/02_dat_clean.tsv")
+>>>>>>> 09df929a0fd3c48477281a908f64d3b8473533ef
 
 print(cancer_dataset_clean)
 
 ```
 
+<<<<<<< HEAD
 
+=======
+## Heatmap of correlation between parameters
+
+```{r}
+#heatmap_corr <- ggplot(data = cancer_dataset, mapping = )
+
+correlation_matrix <- cancer_dataset |> select(!id) |> select_if(is.numeric) |> cor()
+print(correlation_matrix)
+
+tidy_correlation <- correlation_matrix |> 
+  as.tibble() |> 
+  rownames_to_column(var = "variable1") |>
+  pivot_longer(cols = starts_with("Var"), names_to = "Variable", values_to = "Value")
+  gather(key = "variable2", value = "correlation", -variable1)
+print(tidy_correlation)
+
+
+ggplot_heatmap <- ggplot(tidy_correlation, aes(variable1, variable2, fill = correlation)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(low = "blue", 
+                       mid = "white", 
+                       high = "red", 
+                       midpoint = 0, 
+                       limits = c(-1, 1)) +
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+print(ggplot_heatmap)
+
+```
+
+```{r}
+# Name of specific figure
+file_name <- "Heatmap.png"
+
+library(ggplot2)
+
+# Assuming cancer_dataset contains numeric variables
+correlation_matrix <- cor(cancer_dataset |>
+                             select_if(is.numeric) |>
+                             select(-diagnosis) |>
+                             select(-id))
+        
+
+  
+# Reshape the correlation matrix for plotting
+tidy_correlation <- as.data.frame(as.table(correlation_matrix))
+names(tidy_correlation) <- c("Variable1", "Variable2", "Correlation")
+
+# Create heatmap
+gg <- ggplot(tidy_correlation, aes(Variable1, Variable2, fill = Correlation)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(low = "blue", 
+                       mid = "white", 
+                       high = "red", 
+                       midpoint = 0, 
+                       limits = c(-1, 1)) +
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "Correlation Heatmap of Numeric Variables")
+
+# Save the ggplot as a PNG file in the specified folder
+ggsave(file.path(folder_path, file_name), gg, width = 8, height = 6, dpi = 300)
+
+
+```
+
+## Boxplot over data
+
+### path for saved png
+
+```{r}
+# Specify the folder path and filename for the saved plot
+folder_path <- "/home/people/s223094/project/Group_project_10/results"
+
+```
+
+```{r}
+# Name of specific figure
+file_name <- "boxplot_mean.png"
+
+# set seed
+set.seed(1234)
+
+# gather the specific parameters
+cancer_dataset_long <- gather(cancer_dataset, key = "Parameter", value = "Value", `radius mean`, `texture mean`, `perimeter mean`, `area mean`, `smoothness mean`, `concavity mean`, `concave points mean`, `symmetry mean`, `fractal dimension mean`, `compactness mean`)
+
+# Standardize the values within each level of Parameter
+cancer_dataset_long <- cancer_dataset_long |>
+  group_by(Parameter) |>
+  mutate(StandardizedValue = scale(Value))
+
+# Customize boxplot
+gg <- ggplot(data = cancer_dataset_long, 
+       aes(x = Parameter, y = StandardizedValue, fill = as.factor(diagnosis))) +
+  
+  geom_boxplot(alpha = 0.8, 
+               color = "black", 
+               size = 0.2) +
+  
+    scale_fill_manual(values = c("0" = "lightpink", "1" = "lightblue"),
+                    breaks = c("0", "1"),
+                    labels = c("malignant", "benign")) + 
+  
+  labs(y = "Standardized Value", 
+       title = "Boxplot of parameters (mean)",
+       fill = "diagnosis") +
+  
+  theme_minimal() +
+  theme(
+    plot.margin = margin(2, 1, 1, 1, "cm"),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+
+# Save the ggplot as a PNG file in the specified folder
+ggsave(file.path(folder_path, file_name), gg, width = 8, height = 6, dpi = 300)
+
+```
+
+```{r}
+# Name of specific figure
+file_name <- "boxplot_se.png"
+
+# set seed
+set.seed(1234)
+
+# gather the specific parameters
+cancer_dataset_long <- gather(cancer_dataset, key = "Parameter", value = "Value", `radius se`, `texture se`, `perimeter se`, `area se`, `smoothness se`, `concavity se`, `concave points se`, `symmetry se`, `fractal dimension se`, `compactness se`)
+
+# Standardize the values within each level of Parameter
+cancer_dataset_long <- cancer_dataset_long %>%
+  group_by(Parameter) %>%
+  mutate(StandardizedValue = scale(Value))
+
+# Customize boxplot
+gg <- ggplot(data = cancer_dataset_long, 
+       aes(x = Parameter, y = StandardizedValue, fill = as.factor(diagnosis))) +
+  
+  geom_boxplot(alpha = 0.8, 
+               color = "black", 
+               size = 0.2) +
+  
+  scale_fill_manual(values = c("0" = "lightpink", "1" = "lightblue"),
+                    breaks = c("0", "1"),
+                    labels = c("malignant", "benign")) + 
+  
+  labs(y = "Standardized Value", 
+       title = "Boxplot of parameters (mean)",
+       fill = "diagnosis") +
+  
+  labs(x = "Parameter", y = "Standardized Value", title = "Boxplot of parameters (se)") +
+  theme_minimal() +
+  theme(
+    plot.margin = margin(2, 1, 1, 1, "cm"),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+# Save the ggplot as a PNG file in the specified folder
+ggsave(file.path(folder_path, file_name), gg, width = 8, height = 6, dpi = 300)
+
+
+```
+
+```{r}
+# Name of specific figure
+file_name <- "boxplot_worst.png"
+
+# set seed
+set.seed(1234)
+
+# gather specific parameters
+cancer_dataset_long <- gather(cancer_dataset, key = "Parameter", value = "Value", `radius worst`, `texture worst`, `perimeter worst`, `area worst`, `smoothness worst`, `concavity worst`, `concave points worst`, `symmetry worst`, `fractal dimension worst`, `compactness worst`)
+
+# Standardize the values within each level of Parameter
+cancer_dataset_long <- cancer_dataset_long %>%
+  group_by(Parameter) %>%
+  mutate(StandardizedValue = scale(Value))
+
+# Customize boxplot
+gg <- ggplot(data = cancer_dataset_long, 
+       aes(x = Parameter, y = StandardizedValue, fill = as.factor(diagnosis))) +
+  
+  geom_boxplot(alpha = 0.8, 
+               color = "black", 
+               size = 0.2) +
+  
+  scale_fill_manual(values = c("0" = "lightpink", "1" = "lightblue"),
+                    breaks = c("0", "1"),
+                    labels = c("malignant", "benign")) + 
+  
+  labs(y = "Standardized Value", 
+       title = "Boxplot of parameters (mean)",
+       fill = "diagnosis") +
+  
+  labs(x = "Parameter", y = "Standardized Value", title = "Boxplot of parameters (worst)") +
+  theme_minimal() +
+  theme(
+    plot.margin = margin(2, 1, 1, 1, "cm"),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+# Save the ggplot as a PNG file in the specified folder
+ggsave(file.path(folder_path, file_name), gg, width = 8, height = 6, dpi = 300)
+
+```
+>>>>>>> 09df929a0fd3c48477281a908f64d3b8473533ef
