@@ -1,0 +1,17 @@
+---
+title: "00_all"
+format: html
+editor: visual
+---
+
+## Quarto documents
+
+This is a collection of all Quarto documents inside the R folder
+
+{{< include 01_load.qmd >}}
+{{< include 02_clean.qmd >}}
+{{< include 03_describe.qmd >}}
+{{< include 04_augment.qmd >}}
+{{< include 05_PCA_analsis_01.qmd >}}
+{{< include 06_RandomForest_classifier_analysis_02.qmd >}}
+
