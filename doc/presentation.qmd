@@ -11,17 +11,19 @@ Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796,
 
 ::: columns
 ::: {.column width="40%"}
-::: incremental
+::: {.incremental .smaller}
 -   The data set is based on breast cancer sample.
-
--   Split into 10 parameters for; mean, SE, worst
-
+-   Split into 10 parameters for:
+    - mean
+    - SE 
+    - worst
 -   The state of the patients cancer is stated, whether it is benign or malignant.
 :::
 :::
 
+
 ::: {.column width="60%"}
-![Work pipeline](R_pipeline.png)
+![Overview of parameters - Mean](boxplot_mean.png)
 
 :::
 :::
@@ -30,10 +32,7 @@ Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796,
 
 ## Materials and Method
 
-```{r}
-# print pipeline here
-# print an overview of the data above
-```
+![Work pipeline](R_pipeline.png)
 
 ## Analysis 1 - PCA unsupervised
 
