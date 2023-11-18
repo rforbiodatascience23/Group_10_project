@@ -79,7 +79,6 @@ cancer_estimates
    
 
 ```
-<<<<<<< HEAD
 
 Forest plot of variables that are significant
 
@@ -100,6 +99,7 @@ filter(is_significant == "yes" ) |>
        y = "",
        title = "Genes Associated with Early Metastasis in Small Node-Negative Breast Carcinoma",
        caption = "Data from DOI: 10.1002/gcc.20820")
+
 ```
 
 Area and perimiter are very much lower than the rest, so in the following plot they have been excluded to view the other variables.
@@ -121,5 +121,5 @@ filter(is_significant == "yes" & !grepl("area", variables) & !grepl("perimeter",
        title = "Genes Associated with Early Metastasis in Small Node-Negative Breast Carcinoma",
        caption = "Data from DOI: 10.1002/gcc.20820")
 ```
-=======
->>>>>>> c9ed7b681b8f175c2787d41a42935a7f31a9848b
+
+> > > > > > > c9ed7b681b8f175c2787d41a42935a7f31a9848b
