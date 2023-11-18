@@ -4,20 +4,20 @@ format: html
 editor: visual
 ---
 
-
 ```{r}
 library(tidyverse)
 library(dplyr)
 library(broom)
 library(purrr)
+library(ggplot2)
 cancer_dataset_clean <- read_tsv('/net/pupil1/home/people/s194681/projects/Group_project_10/02_dat_clean.tsv')
 
 ```
 
 Linear regression analysis
 
+Creating long version of the dataset, so it's possible to group variables. dplyt pipeline: Variables are grouped, nested and ungrouped.
 
-Creating long version of the dataset, so it's possible to group variables. dplyt pipeline: Variables are grouped, nested and ungrouped. 
 ```{r}
 cancer_dataset_clean_aug_long <- cancer_dataset_clean |> 
   pivot_longer(cols = contains(c('mean', 'worst', 'se')),
@@ -32,7 +32,6 @@ cancer_dataset_clean_aug_long_nested <- cancer_dataset_clean_aug_long |>
 cancer_dataset_clean_aug_long
 ```
 
-
 We group to ensure we are working per variable and add model object that will be calculated based on each variable
 
 ```{r}
@@ -44,8 +43,8 @@ cancer_dataset_clean_aug_long_nested <- cancer_dataset_clean_aug_long_nested |>
 cancer_dataset_clean_aug_long_nested
 ```
 
-
 We map the tidy function to the model object variable
+
 ```{r}
 
 cancer_dataset_clean_aug_long_nested <- cancer_dataset_clean_aug_long_nested |> 
@@ -58,6 +57,7 @@ cancer_dataset_clean_aug_long_nested
 ```
 
 Unnesting the model to reveal all values. Then we select what we want to see, and ungroup the data. We can also add an informational column that reveals if the variable is significant or not.
+
 ```{r}
 cancer_estimates <- cancer_dataset_clean_aug_long_nested |>
   unnest(model_object_tidy)
@@ -80,12 +80,43 @@ cancer_estimates
 
 ```
 
+Forest plot of variables that are significant
 
+```{r}
 
+cancer_estimates |>
+filter(is_significant == "yes" ) |>
+  ggplot(aes(x = estimate,
+             y = fct_reorder(variables, estimate),
+             xmin = conf.low,
+             xmax = conf.high)) +
+  geom_vline(xintercept = 0) +
+  geom_errorbarh() +
+  geom_point() +
+  theme_minimal(base_size = 16) +
+  theme(plot.title = element_text(hjust = 1)) +
+  labs(x = "Estimates (95%CIs)",
+       y = "",
+       title = "Genes Associated with Early Metastasis in Small Node-Negative Breast Carcinoma",
+       caption = "Data from DOI: 10.1002/gcc.20820")
+```
 
+Area and perimiter are very much lower than the rest, so in the following plot they have been excluded to view the other variables.
 
-
-
-
-
-
+```{r}
+cancer_estimates |>
+filter(is_significant == "yes" & !grepl("area", variables) & !grepl("perimeter", variables)) |>
+  ggplot(aes(x = estimate,
+             y = fct_reorder(variables, estimate),
+             xmin = conf.low,
+             xmax = conf.high)) +
+  geom_vline(xintercept = 0) +
+  geom_errorbarh() +
+  geom_point() +
+  theme_minimal(base_size = 16) +
+  theme(plot.title = element_text(hjust = 1)) +
+  labs(x = "Estimates (95%CIs)",
+       y = "",
+       title = "Genes Associated with Early Metastasis in Small Node-Negative Breast Carcinoma",
+       caption = "Data from DOI: 10.1002/gcc.20820")
+```
