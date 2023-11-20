@@ -39,9 +39,16 @@ pca_fit |>
   ggplot(aes(.fittedPC1, .fittedPC2, color = diagnosis)) + 
   geom_point(size = 1.5) +
   scale_color_manual(
-    values = c(M = "#D55E00", B = "#0072B2")
+    values = c(M = "#Ff1000", B = "#0012B2")
   ) +
-  theme_half_open(12) + background_grid()
+  theme_half_open(12) + 
+  background_grid() +
+  theme_minimal_grid(12) +
+    labs(title = "PCA plot",
+         x = "PC1",
+         y = "PC2"
+       ) +
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
 ## Looking at the data in PC coordinates
