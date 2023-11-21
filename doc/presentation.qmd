@@ -23,7 +23,8 @@ Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796,
 
 
 ::: {.column width="60%"}
-![Overview of parameters - Mean](../results/boxplot_mean.png)
+
+A picture here of the general information
 
 :::
 ::::
@@ -31,6 +32,23 @@ Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796,
 ## Materials and Method
 
 ![Work pipeline](R_pipeline.png)
+
+## Boxplot - outliers
+
+:::: {.columns}
+
+::: {.column width="40%"}
+![](../results/boxplot_se.png)
+
+![](../results/boxplot_worst.png)
+:::
+
+::: {.column width="60%"}
+![](../results/boxplot_mean.png) 
+:::
+
+::::
+
 
 
 ## Correlation in parameters {.smaller}
@@ -86,12 +104,15 @@ Left column
 
 
 
-## Analysis 2 - Supervised ML
+## Analysis 2 - Random Forest Classfier
 
 The two analysis
+
+## Analysis 2 - ROC-Curve
+
+Can we trust the model
 
 ## Discussion
 
 Qu
 
-## 
