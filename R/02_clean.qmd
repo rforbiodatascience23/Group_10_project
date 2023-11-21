@@ -30,9 +30,6 @@ cancer_data_2 <- read_tsv('/net/pupil1/home/people/s194681/projects/Group_projec
   mutate_all(~ str_replace_all(., '"', ''))  
 
 
-
-
-
 ```
 
 
@@ -54,10 +51,10 @@ cancer_dataset_clean <- cancer_data_1 |>
   full_join(cancer_data_2, by = 'id ') |> 
   full_join(cancer_data_3, by = 'id ')|>
   as_tibble() |>
+  write_tsv(file = "/net/pupil1/home/people/s194681/projects/Group_project_10/02_dat_clean.tsv") |>
   mutate(`diagnosis ` = case_when(`diagnosis `== "M" ~ 0,
     `diagnosis `== "B" ~ 1)) |> 
-  write_tsv(file = "/net/pupil1/home/people/s194681/projects/Group_project_10/02_dat_clean.tsv") |>
-  print()
+  write_tsv(file = "/net/pupil1/home/people/s194681/projects/Group_project_10/02_dat_clean_binary.tsv")
 
 ```
 
