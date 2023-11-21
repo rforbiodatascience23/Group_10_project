@@ -6,20 +6,24 @@ editor: visual
 
 ```{r}
 library(tidyverse)
-library(purrr)
-library(randomForest)
 ```
 
 ## Data Preparation
 
 ```{r}
 # Assuming you have a data frame called cancer_data_clean
-data_folder <- '~/Desktop/'
-cancer_data_clean <- read.table(paste0(data_folder,'02_dat_clean.tsv'),sep = '\t',header = TRUE)
+
+# Change the column names
+cancer_data_clean <- cancer_data_clean %>%
+  rename_all(~gsub("\\.", "_", .))
 
 # Display unique values in the 'diagnosis' column
-cancer_data_clean <- cancer_data_clean |>
-  mutate(diagnosis = ifelse(diagnosis == 1, "B", ifelse(diagnosis == 0, "M", diagnosis))) |>
+cancer_data_clean %>%
+  select(diagnosis) %>%
+  distinct()
+
+# Convert 'diagnosis' to a factor
+cancer_data_clean <- cancer_data_clean %>%
   mutate(diagnosis = as.factor(diagnosis))
 ```
 
@@ -29,21 +33,15 @@ cancer_data_clean <- cancer_data_clean |>
 # Set seed for reproducibility
 set.seed(123)
 
-# Set up 5-fold cross-validation
-n <- nrow(cancer_data_clean)
-indices <- sample(n)
-k <- 5
-# Create folds
-fold_sizes <- rep(n %/% k, k)
-fold_sizes[1:(n %% k)] <- fold_sizes[1:(n %% k)] + 1
-cum_fold_sizes <- cumsum(fold_sizes)
-folds <- vector("list", length(fold_sizes))
-start_idx <- 1
-for (i in 1:length(fold_sizes)) {
-  end_idx <- cum_fold_sizes[i]
-  folds[[i]] <- indices[start_idx:end_idx]
-  start_idx <- end_idx + 1
-}
+# Split the data into training and testing sets
+split_index <- sample(1:nrow(cancer_data_clean), 0.8 * nrow(cancer_data_clean))
+trainData <- cancer_data_clean %>% slice(split_index)
+testData <- cancer_data_clean %>% slice(-split_index)
+
+# Set up 10-fold cross-validation
+set.seed(123)
+fold_size <- floor(nrow(cancer_data_clean) / 10)
+folds <- crossv_mc(cancer_data_clean, prop = 0.9, times = 10)
 
 # Initialize an empty data frame to store ROC data
 roc_data <- data.frame()
@@ -54,8 +52,8 @@ for (i in seq_along(folds)) {
   train_indices <- setdiff(seq_len(nrow(cancer_data_clean)), test_indices)
   
   # Splitting data
-  trainData <- cancer_data_clean |> slice(train_indices)
-  testData <- cancer_data_clean |> slice(test_indices)
+  trainData <- cancer_data_clean %>% slice(train_indices)
+  testData <- cancer_data_clean %>% slice(test_indices)
   
   # Train the model
   model <- randomForest(diagnosis ~ ., data = trainData)
