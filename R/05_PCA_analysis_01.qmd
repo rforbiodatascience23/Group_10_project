@@ -19,6 +19,7 @@ library(cowplot)
 ```{r}
 cancer_dataset <- read_tsv("/home/people/s223094/project/Group_project_10/R/02_dat_clean.tsv")
 print(cancer_dataset)
+# hej
 ```
 
 ```{r}
