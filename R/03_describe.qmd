@@ -10,6 +10,7 @@ editor: visual
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
+library(reshape2)
 ```
 
 Dataset: Breast Cancer Wisconsin (Diagnostic) Data Set. The dataset is made to predict whether breast cancer in patients are benign or malignant. The attributes are computed from a digitized image of a fine needle aspirate of a breast mass. They describe characteristics of the cell nuclei present in the image. There are 31 different attributes from these images based on 569 patients. The class distribution is 357 benign and 212 malignant cases. There are no NA's. Each patient case is distinguished with an ID number and a diagnostic attribute: B for benign and M for malignant. For each cell nucleus there are 10 features computed: - Radius - Standard deviation of the gray-scaled values (texture) - Perimeter - Area - Local variation in radius lengths (smoothness) - Local variation in radius lengths (compactness) - Concave portions of the contour (concavity) - Number of concave portions in contour (concave points) - Symmetry - Fractal dimension For these each of these attributes 3 numbers were calculated: mean, standard error and the worst (mean of the 3 largest values). These 3 categories of datapoints are assembled to one big dataset as seen below.
@@ -26,13 +27,18 @@ print(cancer_dataset)
 ## Heatmap of correlation between parameters
 
 ```{r}
-#heatmap_corr <- ggplot(data = cancer_dataset, mapping = )
+# Specify the folder path and filename for the saved plot
+folder_path <- "net/pupil1/home/people/s195796/projects/Group_10_project/results"
+```
+
+```{r}
+file_name <- "Heatmap.png"
 
 correlation_matrix <- cancer_dataset |> 
   select(!id) |>
-  #mutate(
-   # diagnosis = case_when(diagnosis == 0 ~ "M",
-    #diagnosis == 1 ~ "B"))|> 
+  mutate(
+    diagnosis = case_when(diagnosis == 0 ~ "M",
+    diagnosis == 1 ~ "B"))|> 
   select_if(is.numeric) |> 
   cor()
 
@@ -41,76 +47,14 @@ myrownames <- rownames(correlation_matrix)
 tidy_correlation <- correlation_matrix |>
   as_tibble() |> 
   mutate(myrownames) |>
-  column_to_rownames("myrownames") |>
-  pivot_longer(cols = starts_with("myrownames"), names_to = "Variable", values_to = "Value")
-  #gather(key = "variable2", value = "correlation", -variable1)
-print(tidy_correlation)
+  pivot_longer(cols = contains(c('mean', 'worst', 'se')),
+               names_to = "variables",
+               values_to = "correlation")
 
-ggplot_heatmap <- tidy_correlation |>
-  ggplot(data = _) +
-  geom_tile(color = "white") +
-  scale_fill_gradient2(low = "blue", 
-                       mid = "white", 
-                       high = "red", 
-                       midpoint = 0, 
-                       limits = c(-1, 1)) +
-  theme_minimal() + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-print(ggplot_heatmap)
-
-
-
-ggplot_heatmap <- ggplot(data = tidy_correlation, 
-                         mapping = aes(x = colnames(),
-                                       y = myrownames)) +
-  geom_tile(color = "white") +
-  scale_fill_gradient2(low = "blue", 
-                       mid = "white", 
-                       high = "red", 
-                       midpoint = 0, 
-                       limits = c(-1, 1)) +
-  theme_minimal() + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-print(ggplot_heatmap)
-
-
-
-ggplot_heatmap <- ggplot(tidy_correlation, aes(variable1, variable2, fill = correlation)) +
-  geom_tile(color = "white") +
-  scale_fill_gradient2(low = "blue", 
-                       mid = "white", 
-                       high = "red", 
-                       midpoint = 0, 
-                       limits = c(-1, 1)) +
-  theme_minimal() + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-print(ggplot_heatmap)
-
-```
-
-```{r}
-# Name of specific figure
-file_name <- "Heatmap.png"
-
-library(ggplot2)
-
-# Assuming cancer_dataset contains numeric variables
-correlation_matrix <- cor(cancer_dataset |>
-                             select_if(is.numeric) |>
-                             select(-diagnosis) |>
-                             select(-id))
-        
-
-  
-# Reshape the correlation matrix for plotting
-tidy_correlation <- as.data.frame(as.table(correlation_matrix))
-names(tidy_correlation) <- c("Variable1", "Variable2", "Correlation")
-
-# Create heatmap
-gg <- ggplot(tidy_correlation, aes(Variable1, Variable2, fill = Correlation)) +
+ggplot_heatmap <- ggplot(data = tidy_correlation,
+                         mapping = aes(x = variables,
+                                       y = myrownames,
+                                       fill = correlation)) +
   geom_tile(color = "white") +
   scale_fill_gradient2(low = "blue", 
                        mid = "white", 
@@ -119,95 +63,15 @@ gg <- ggplot(tidy_correlation, aes(Variable1, Variable2, fill = Correlation)) +
                        limits = c(-1, 1)) +
   theme_minimal() + 
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(title = "Correlation Heatmap of Numeric Variables")
-
-# Save the ggplot as a PNG file in the specified folder
-ggsave(file.path(folder_path, file_name), gg, width = 8, height = 6, dpi = 300)
-
-
-```
-
-## Boxplot over data
-
-### path for saved png
-
-```{r}
-# Specify the folder path and filename for the saved plot
-folder_path <- "/home/people/s223094/project/Group_project_10/results"
-
-```
-
-```{r}
-# Name of specific figure
-file_name <- "boxplot_mean.png"
-
-# set seed
-set.seed(1234)
-
-
-## Heatmap of correlation between parameters
-
-#heatmap_corr <- ggplot(data = cancer_dataset, mapping = )
-
-correlation_matrix <- cancer_dataset |> select(!id) |> select_if(is.numeric) |> cor()
-print(correlation_matrix)
-
-tidy_correlation <- correlation_matrix |> 
-  as.tibble() |> 
-  rownames_to_column(var = "variable1") |>
-  pivot_longer(cols = starts_with("Var"), names_to = "Variable", values_to = "Value")
-  gather(key = "variable2", value = "correlation", -variable1)
-print(tidy_correlation)
-
-
-ggplot_heatmap <- ggplot(tidy_correlation, aes(variable1, variable2, fill = correlation)) +
-  geom_tile(color = "white") +
-  scale_fill_gradient2(low = "blue", 
-                       mid = "white", 
-                       high = "red", 
-                       midpoint = 0, 
-                       limits = c(-1, 1)) +
-  theme_minimal() + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  labs(title = "Correlation between variables",
+       x = "variables",
+       y = "variables") +
+  theme(plot.title = element_text(hjust = 0.5)
 
 print(ggplot_heatmap)
 
-```
-
-```{r}
-# Name of specific figure
-file_name <- "Heatmap.png"
-
-library(ggplot2)
-
-# Assuming cancer_dataset contains numeric variables
-correlation_matrix <- cor(cancer_dataset |>
-                             select_if(is.numeric) |>
-                             select(-diagnosis) |>
-                             select(-id))
-        
-
-  
-# Reshape the correlation matrix for plotting
-tidy_correlation <- as.data.frame(as.table(correlation_matrix))
-names(tidy_correlation) <- c("Variable1", "Variable2", "Correlation")
-
-# Create heatmap
-gg <- ggplot(tidy_correlation, aes(Variable1, Variable2, fill = Correlation)) +
-  geom_tile(color = "white") +
-  scale_fill_gradient2(low = "blue", 
-                       mid = "white", 
-                       high = "red", 
-                       midpoint = 0, 
-                       limits = c(-1, 1)) +
-  theme_minimal() + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(title = "Correlation Heatmap of Numeric Variables")
-
 # Save the ggplot as a PNG file in the specified folder
-ggsave(file.path(folder_path, file_name), gg, width = 8, height = 6, dpi = 300)
-
-
+ggsave(file.path(folder_path, file_name), ggplot_heatmap, width = 8, height = 6, dpi = 300)
 ```
 
 ## Boxplot over data
