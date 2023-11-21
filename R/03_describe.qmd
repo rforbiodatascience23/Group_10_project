@@ -12,32 +12,38 @@ library(dplyr)
 library(ggplot2)
 ```
 
-Dataset: Breast Cancer Wisconsin (Diagnostic) Data Set. The dataset is made to predict whether breast cancer in patients are benign or malignant. The attributes are computed from a digitized image of a fine needle aspirate of a breast mass. They describe characteristics of the cell nuclei present in the image. There are 31 different attributes from these images based on 569 patients. The class distribution is 357 benign and 212 malignant cases. There are no NA's. Each patient case is distinguished with an ID number and a diagnostic attribute: B for benign and M for malignant. For each cell nucleus there are 10 features computed: - Radius - Standard deviation of the gray-scaled values (texture) - Perimeter - Area - Local variation in radius lengths (smoothness) - Local variation in radius lengths (compactness) - Concave portions of the contour (concavity) - Number of concave portions in contour (concave points) - Symmetry - Fractal dimension For these each of these attributes 3 numbers were calculated: mean, standard error and the worst (mean of the 3 largest values). These 3 categories of datapoints are assembled to one big dataset as seen below.
+Dataset: Breast Cancer Wisconsin (Diagnostic) Data Set. The dataset is made to predict whether breast cancer in patients are benign or malignant. The attributes are computed from a digitized image of a fine needle aspirate of a breast mass. They describe characteristics of the cell nuclei present in the image. There are 31 different attributes from these images based on 569 patients. The class distribution is 357 benign and 212 malignant cases. There are no NA's. Each patient case is distinguished with an ID number and a diagnostic attribute: B for benign and M for malignant. For each cell nucleus there are 10 features computed:\
+- Radius\
+- Standard deviation of the gray-scaled values (texture)\
+- Perimeter - Area - Local variation in radius lengths (smoothness)\
+- Local variation in radius lengths (compactness)\
+- Concave portions of the contour (concavity)\
+- Number of concave portions in contour (concave points)\
+- Symmetry - Fractal dimension\
+For these each of these attributes 3 numbers were calculated: mean, standard error and the worst (mean of the 3 largest values). These 3 categories of datapoints are assembled to one big dataset as seen below.
 
 ```{r}
 # Christina path: /home/people/s223094/project/Group_project_10/R/02_dat_clean.tsv
 # matilde path: "/net/pupil1/home/people/s195796/projects/Group_10_project/R/02_dat_clean.tsv"
 #cancer_dataset <- read_tsv("/home/people/s223094/project/Group_project_10/R/02_dat_clean.tsv")
-cancer_dataset <- read_tsv("/net/pupil1/home/people/s195796/projects/Group_10_project/R/02_dat_clean.tsv")
-print(cancer_dataset)
+#cancer_dataset <- read_tsv("/net/pupil1/home/people/s195796/projects/Group_10_project/R/02_dat_clean.tsv")
+cancer_dataset_clean <- read_tsv("/net/pupil1/home/people/s194681/projects/Group_10_project_2/02_dat_clean.tsv")
 
+cancer_dataset_clean_binary <- read_tsv("/net/pupil1/home/people/s194681/projects/Group_10_project_2/02_dat_clean_binary.tsv")
 ```
 
 ## Heatmap of correlation between parameters
 
 ```{r}
 # Specify the folder path and filename for the saved plot
-folder_path2 <- "net/pupil1/home/people/s195796/projects/Group_10_project/results"
+folder_path2 <- "/net/pupil1/home/people/s194681/projects/Group_10_project_2/results"
 ```
 
 ```{r}
 file_name <- "Heatmap.png"
 
-correlation_matrix <- cancer_dataset |> 
+correlation_matrix <- cancer_dataset_clean |> 
   select(!id) |>
-  mutate(
-    diagnosis = case_when(diagnosis == 0 ~ "M",
-    diagnosis == 1 ~ "B"))|> 
   select_if(is.numeric) |> 
   cor()
 
@@ -91,15 +97,18 @@ file_name <- "boxplot_mean.png"
 set.seed(1234)
 
 # gather the specific parameters
-cancer_dataset_long <- gather(cancer_dataset, key = "Parameter", value = "Value", `radius mean`, `texture mean`, `perimeter mean`, `area mean`, `smoothness mean`, `concavity mean`, `concave points mean`, `symmetry mean`, `fractal dimension mean`, `compactness mean`)
-
 # Standardize the values within each level of Parameter
-cancer_dataset_long <- cancer_dataset_long |>
+cancer_dataset_clean_binary_long <- gather(cancer_dataset_clean_binary , key = "Parameter", value = "Value", `radius mean`, `texture mean`, `perimeter mean`, `area mean`, `smoothness mean`, `concavity mean`, `concave points mean`, `symmetry mean`, `fractal dimension mean`, `compactness mean`) |>
   group_by(Parameter) |>
   mutate(StandardizedValue = scale(Value))
 
+# Standardize the values within each level of Parameter
+#cancer_dataset_clean_binary_long <- cancer_dataset_clean_binary_long |>
+#  group_by(Parameter) |>
+#  mutate(StandardizedValue = scale(Value))
+
 # Customize boxplot
-gg <- ggplot(data = cancer_dataset_long, 
+gg <- ggplot(data = cancer_dataset_clean_binary_long, 
        aes(x = Parameter, y = StandardizedValue, fill = as.factor(diagnosis))) +
   
   geom_boxplot(alpha = 0.8, 
@@ -120,7 +129,6 @@ gg <- ggplot(data = cancer_dataset_long,
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
-
 # Save the ggplot as a PNG file in the specified folder
 ggsave(file.path(folder_path, file_name), gg, width = 8, height = 6, dpi = 300)
 
@@ -134,15 +142,14 @@ file_name <- "boxplot_se.png"
 set.seed(1234)
 
 # gather the specific parameters
-cancer_dataset_long <- gather(cancer_dataset, key = "Parameter", value = "Value", `radius se`, `texture se`, `perimeter se`, `area se`, `smoothness se`, `concavity se`, `concave points se`, `symmetry se`, `fractal dimension se`, `compactness se`)
-
 # Standardize the values within each level of Parameter
-cancer_dataset_long <- cancer_dataset_long %>%
-  group_by(Parameter) %>%
+cancer_dataset_clean_binary_long <- gather(cancer_dataset_clean_binary, key = "Parameter", value = "Value", `radius se`, `texture se`, `perimeter se`, `area se`, `smoothness se`, `concavity se`, `concave points se`, `symmetry se`, `fractal dimension se`, `compactness se`) |>
+  group_by(Parameter) |>
   mutate(StandardizedValue = scale(Value))
 
+
 # Customize boxplot
-gg <- ggplot(data = cancer_dataset_long, 
+gg <- ggplot(data = cancer_dataset_clean_binary_long, 
        aes(x = Parameter, y = StandardizedValue, fill = as.factor(diagnosis))) +
   
   geom_boxplot(alpha = 0.8, 
@@ -178,15 +185,13 @@ file_name <- "boxplot_worst.png"
 set.seed(1234)
 
 # gather specific parameters
-cancer_dataset_long <- gather(cancer_dataset, key = "Parameter", value = "Value", `radius worst`, `texture worst`, `perimeter worst`, `area worst`, `smoothness worst`, `concavity worst`, `concave points worst`, `symmetry worst`, `fractal dimension worst`, `compactness worst`)
-
-# Standardize the values within each level of Parameter
-cancer_dataset_long <- cancer_dataset_long %>%
-  group_by(Parameter) %>%
+cancer_dataset_clean_long_binary <- gather(cancer_dataset_clean_binary, key = "Parameter", value = "Value", `radius worst`, `texture worst`, `perimeter worst`, `area worst`, `smoothness worst`, `concavity worst`, `concave points worst`, `symmetry worst`, `fractal dimension worst`, `compactness worst`) |>
+  group_by(Parameter) |>
   mutate(StandardizedValue = scale(Value))
 
+
 # Customize boxplot
-gg <- ggplot(data = cancer_dataset_long, 
+gg <- ggplot(data = cancer_dataset_clean_binary_long, 
        aes(x = Parameter, y = StandardizedValue, fill = as.factor(diagnosis))) +
   
   geom_boxplot(alpha = 0.8, 
