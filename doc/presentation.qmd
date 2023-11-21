@@ -23,7 +23,7 @@ Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796,
 
 
 ::: {.column width="60%"}
-![Overview of parameters - Mean](boxplot_mean.png)
+![Overview of parameters - Mean](../results/boxplot_mean.png)
 
 :::
 :::
