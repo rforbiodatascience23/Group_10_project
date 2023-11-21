@@ -27,8 +27,7 @@ For these each of these attributes 3 numbers were calculated: mean, standard err
 # matilde path: "/net/pupil1/home/people/s195796/projects/Group_10_project/R/02_dat_clean.tsv"
 #cancer_dataset <- read_tsv("/home/people/s223094/project/Group_project_10/R/02_dat_clean.tsv")
 #cancer_dataset <- read_tsv("/net/pupil1/home/people/s195796/projects/Group_10_project/R/02_dat_clean.tsv")
-cancer_dataset <- read_tsv("/net/pupil1/home/people/s194681/projects/Group_project_10/02_dat_clean.tsv")
-print(cancer_dataset_clean)
+cancer_dataset_clean <- read_tsv("/net/pupil1/home/people/s194681/projects/Group_10_project_2/02_dat_clean.tsv")
 
 ```
 
@@ -36,17 +35,14 @@ print(cancer_dataset_clean)
 
 ```{r}
 # Specify the folder path and filename for the saved plot
-folder_path2 <- "net/pupil1/home/people/s195796/projects/Group_10_project/results"
+folder_path2 <- "/net/pupil1/home/people/s194681/projects/Group_10_project_2/results"
 ```
 
 ```{r}
 file_name <- "Heatmap.png"
 
-correlation_matrix <- cancer_dataset |> 
+correlation_matrix <- cancer_dataset_clean |> 
   select(!id) |>
-  mutate(
-    diagnosis = case_when(diagnosis == 0 ~ "M",
-    diagnosis == 1 ~ "B"))|> 
   select_if(is.numeric) |> 
   cor()
 
@@ -100,7 +96,7 @@ file_name <- "boxplot_mean.png"
 set.seed(1234)
 
 # gather the specific parameters
-cancer_dataset_long <- gather(cancer_dataset, key = "Parameter", value = "Value", `radius mean`, `texture mean`, `perimeter mean`, `area mean`, `smoothness mean`, `concavity mean`, `concave points mean`, `symmetry mean`, `fractal dimension mean`, `compactness mean`)
+cancer_dataset_clean_long <- gather(cancer_dataset, key = "Parameter", value = "Value", `radius mean`, `texture mean`, `perimeter mean`, `area mean`, `smoothness mean`, `concavity mean`, `concave points mean`, `symmetry mean`, `fractal dimension mean`, `compactness mean`)
 
 # Standardize the values within each level of Parameter
 cancer_dataset_long <- cancer_dataset_long |>
