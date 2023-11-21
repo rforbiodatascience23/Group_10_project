@@ -17,7 +17,7 @@ library(cowplot)
 ## Read data
 
 ```{r}
-cancer_dataset <- read_tsv("/net/pupil1/home/people/s195796/projects/Group_10_project/R/02_dat_clean.tsv")
+cancer_dataset <- read_tsv("/home/people/s223094/project/Group_project_10/R/02_dat_clean.tsv")
 print(cancer_dataset)
 ```
 
@@ -39,13 +39,76 @@ pca_fit |>
   ggplot(aes(.fittedPC1, .fittedPC2, color = diagnosis)) + 
   geom_point(size = 1.5) +
   scale_color_manual(
-    values = c(M = "#D55E00", B = "#0072B2")
+    values = c(M = "#Ff1000", B = "#0012B2")
   ) +
-  theme_half_open(12) + background_grid()
+  theme_half_open(12) + 
+  background_grid() +
+  theme_minimal_grid(12) +
+    labs(title = "PCA plot",
+         x = "PC1",
+         y = "PC2"
+       ) +
+  theme(plot.title = element_text(hjust = 0.5))
 ```
+
+## Looking at the data in PC coordinates
 
 ```{r}
 # extract rotation matrix
-pca_fit 
+pca_fit |>
   tidy(matrix = "rotation")
 ```
+
+```{r}
+# define arrow style for plotting
+arrow_style <- arrow(
+  angle = 20, ends = "first", type = "closed", length = grid::unit(8, "pt")
+)
+
+# plot rotation matrix
+pca_fit |>
+  tidy(matrix = "rotation") |>
+  pivot_wider(names_from = "PC", names_prefix = "PC", values_from = "value") |>
+  ggplot(aes(PC1, PC2)) +
+  geom_segment(xend = 0, yend = 0, arrow = arrow_style) +
+  geom_text(
+    aes(label = column),
+    hjust = 1, 
+    nudge_x = -0.2,
+    color = "#300e9d",
+    size = 2
+  ) +
+  xlim(-1.25, .5) + ylim(-.5, 1) +
+  coord_fixed() + # fix aspect ratio to 1:1
+  theme_minimal_grid(12) +
+    labs(title = "Rotation matrix",
+       ) +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+The rotation matrix is implicitly applied to the data points to align them with the principal components. The resulting plot shows the data points projected onto the new coordinate system defined by the principal components.
+
+## Looking at the variance explained by each PC
+
+```{r}
+pca_fit |>
+  tidy(matrix = "eigenvalues")
+```
+
+```{r}
+pca_fit |>
+  tidy(matrix = "eigenvalues") |>
+  ggplot(aes(PC, percent)) +
+  geom_col(fill = "#300e9d", alpha = 0.8) +
+  scale_x_continuous(breaks = 1:9) +
+  scale_y_continuous(
+    labels = scales::percent_format(),
+    expand = expansion(mult = c(0, 0.01))
+  ) +
+  theme_minimal_hgrid(12) +
+  labs(title = "Variation in data",
+       ) +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+The first component captures more than 40% of the variation in the data
