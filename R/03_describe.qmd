@@ -29,6 +29,7 @@ For these each of these attributes 3 numbers were calculated: mean, standard err
 #cancer_dataset <- read_tsv("/net/pupil1/home/people/s195796/projects/Group_10_project/R/02_dat_clean.tsv")
 cancer_dataset_clean <- read_tsv("/net/pupil1/home/people/s194681/projects/Group_10_project_2/02_dat_clean.tsv")
 
+cancer_dataset_clean_binary <- read_tsv("/net/pupil1/home/people/s194681/projects/Group_10_project_2/02_dat_clean_binary.tsv")
 ```
 
 ## Heatmap of correlation between parameters
@@ -96,15 +97,18 @@ file_name <- "boxplot_mean.png"
 set.seed(1234)
 
 # gather the specific parameters
-cancer_dataset_clean_long <- gather(cancer_dataset, key = "Parameter", value = "Value", `radius mean`, `texture mean`, `perimeter mean`, `area mean`, `smoothness mean`, `concavity mean`, `concave points mean`, `symmetry mean`, `fractal dimension mean`, `compactness mean`)
-
 # Standardize the values within each level of Parameter
-cancer_dataset_long <- cancer_dataset_long |>
+cancer_dataset_clean_binary_long <- gather(cancer_dataset_clean_binary , key = "Parameter", value = "Value", `radius mean`, `texture mean`, `perimeter mean`, `area mean`, `smoothness mean`, `concavity mean`, `concave points mean`, `symmetry mean`, `fractal dimension mean`, `compactness mean`) |>
   group_by(Parameter) |>
   mutate(StandardizedValue = scale(Value))
 
+# Standardize the values within each level of Parameter
+#cancer_dataset_clean_binary_long <- cancer_dataset_clean_binary_long |>
+#  group_by(Parameter) |>
+#  mutate(StandardizedValue = scale(Value))
+
 # Customize boxplot
-gg <- ggplot(data = cancer_dataset_long, 
+gg <- ggplot(data = cancer_dataset_clean_binary_long, 
        aes(x = Parameter, y = StandardizedValue, fill = as.factor(diagnosis))) +
   
   geom_boxplot(alpha = 0.8, 
@@ -125,7 +129,6 @@ gg <- ggplot(data = cancer_dataset_long,
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
 
-
 # Save the ggplot as a PNG file in the specified folder
 ggsave(file.path(folder_path, file_name), gg, width = 8, height = 6, dpi = 300)
 
@@ -139,15 +142,14 @@ file_name <- "boxplot_se.png"
 set.seed(1234)
 
 # gather the specific parameters
-cancer_dataset_long <- gather(cancer_dataset, key = "Parameter", value = "Value", `radius se`, `texture se`, `perimeter se`, `area se`, `smoothness se`, `concavity se`, `concave points se`, `symmetry se`, `fractal dimension se`, `compactness se`)
-
 # Standardize the values within each level of Parameter
-cancer_dataset_long <- cancer_dataset_long %>%
-  group_by(Parameter) %>%
+cancer_dataset_clean_binary_long <- gather(cancer_dataset_clean_binary, key = "Parameter", value = "Value", `radius se`, `texture se`, `perimeter se`, `area se`, `smoothness se`, `concavity se`, `concave points se`, `symmetry se`, `fractal dimension se`, `compactness se`) |>
+  group_by(Parameter) |>
   mutate(StandardizedValue = scale(Value))
 
+
 # Customize boxplot
-gg <- ggplot(data = cancer_dataset_long, 
+gg <- ggplot(data = cancer_dataset_clean_binary_long, 
        aes(x = Parameter, y = StandardizedValue, fill = as.factor(diagnosis))) +
   
   geom_boxplot(alpha = 0.8, 
@@ -183,15 +185,13 @@ file_name <- "boxplot_worst.png"
 set.seed(1234)
 
 # gather specific parameters
-cancer_dataset_long <- gather(cancer_dataset, key = "Parameter", value = "Value", `radius worst`, `texture worst`, `perimeter worst`, `area worst`, `smoothness worst`, `concavity worst`, `concave points worst`, `symmetry worst`, `fractal dimension worst`, `compactness worst`)
-
-# Standardize the values within each level of Parameter
-cancer_dataset_long <- cancer_dataset_long %>%
-  group_by(Parameter) %>%
+cancer_dataset_clean_long_binary <- gather(cancer_dataset_clean_binary, key = "Parameter", value = "Value", `radius worst`, `texture worst`, `perimeter worst`, `area worst`, `smoothness worst`, `concavity worst`, `concave points worst`, `symmetry worst`, `fractal dimension worst`, `compactness worst`) |>
+  group_by(Parameter) |>
   mutate(StandardizedValue = scale(Value))
 
+
 # Customize boxplot
-gg <- ggplot(data = cancer_dataset_long, 
+gg <- ggplot(data = cancer_dataset_clean_binary_long, 
        aes(x = Parameter, y = StandardizedValue, fill = as.factor(diagnosis))) +
   
   geom_boxplot(alpha = 0.8, 
