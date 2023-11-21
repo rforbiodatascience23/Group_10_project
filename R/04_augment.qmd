@@ -9,7 +9,7 @@ library(tidyverse)
 library(dplyr)
 library(broom)
 library(purrr)
-cancer_dataset_clean <- read_tsv('/net/pupil1/home/people/s195796/projects/Group_10_project/R/02_dat_clean_binary.tsv')
+cancer_dataset_clean <- read_tsv('/net/pupil1/home/people/s194681/projects/Group_10_project_2/02_dat_clean_binary.tsv')
 #/net/pupil1/home/people/s194681/projects/Group_project_10/02_dat_clean.tsv
 ```
 
@@ -18,17 +18,16 @@ Linear regression analysis
 Creating long version of the dataset, so it's possible to group variables. dplyt pipeline: Variables are grouped, nested and ungrouped.
 
 ```{r}
-cancer_dataset_clean_aug_long <- cancer_dataset_clean |> 
+cancer_dataset_clean_aug_long_nested <- cancer_dataset_clean |> 
   pivot_longer(cols = contains(c('mean', 'worst', 'se')),
                names_to = "variables",
-               values_to = "values") 
-
-cancer_dataset_clean_aug_long_nested <- cancer_dataset_clean_aug_long |>
+               values_to = "values") |>
   group_by(variables) |>
   nest() |>
   ungroup()
 
-cancer_dataset_clean_aug_long 
+
+ 
 ```
 
 We group to ensure we are working per variable and add model object that will be calculated based on each variable
@@ -75,7 +74,21 @@ cancer_estimates <- cancer_estimates |>
                                     q.value > 0.05 ~ "no")) |>
   write_tsv(file = "/net/pupil1/home/people/s194681/projects/Group_project_10/03_dat_aug.tsv")
 
+pl <- cancer_estimates |> 
+  filter(is_significant == "yes") |> 
+  ggplot(aes(x = estimate,
+             y = fct_reorder(variables, estimate),
+             xmin = conf.low,
+             xmax = conf.high)) +
+  geom_vline(xintercept = 0) +
+  geom_errorbarh() +
+  geom_point() +
+  theme_minimal(base_size = 16) +
+  theme(plot.title = element_text(hjust = 1)) +
+  labs(x = "Estimates (95%CIs)",
+       y = "",
+       title = "Parameters associated with breast cancer")
 
-   
+print(pl)
 
 ```
