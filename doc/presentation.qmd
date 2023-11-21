@@ -9,7 +9,7 @@ Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796,
 
 ## Introduction {.smaller}
 
-::: columns
+:::: columns
 ::: {.column width="40%"}
 ::: {.incremental .smaller}
 -   The data set is based on breast cancer sample.
@@ -26,17 +26,69 @@ Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796,
 ![Overview of parameters - Mean](../results/boxplot_mean.png)
 
 :::
-:::
-
-
+::::
 
 ## Materials and Method
 
 ![Work pipeline](R_pipeline.png)
 
+
+## Correlation in parameters {.smaller}
+
+:::: {.columns}
+
+::: {.column width="40%"}
+::: {.incremental .smaller}
+-   Step 1
+-   step 2
+-   Step 3
+:::
+:::
+
+::: {.column width="60%"}
+![](../results/Heatmap.png)
+:::
+
+::::
+
+
+## Augment() of the data
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+| Default | Left | Right | Center |
+|---------|:-----|------:|:------:|
+| 12      | 12   |    12 |   12   |
+| 123     | 123  |   123 |  123   |
+| 1       | 1    |     1 |   1    |
+
+:::
+
+::: {.column width="40%"}
+Right column
+:::
+
+::::
+
 ## Analysis 1 - PCA unsupervised
 
-The two analysis m
+:::: {.columns}
+
+::: {.column width="40%"}
+Left column
+:::
+
+::: {.column width="60%"}
+![](../results/pca_plot.png){width=350}
+
+![](../results/variation_in_data.png){width=350}
+:::
+
+::::
+
+
 
 ## Analysis 2 - Supervised ML
 
