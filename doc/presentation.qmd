@@ -58,11 +58,7 @@ Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796,
 
 ::: {.column width="60%"}
 
-| Default | Left | Right | Center |
-|---------|:-----|------:|:------:|
-| 12      | 12   |    12 |   12   |
-| 123     | 123  |   123 |  123   |
-| 1       | 1    |     1 |   1    |
+![Forest plot](../results/forest_plot.png)
 
 :::
 
