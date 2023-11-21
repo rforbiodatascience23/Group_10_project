@@ -9,8 +9,8 @@ library(tidyverse)
 library(dplyr)
 library(broom)
 library(purrr)
-cancer_dataset_clean <- read_tsv('/net/pupil1/home/people/s194681/projects/Group_project_10/02_dat_clean.tsv')
-
+cancer_dataset_clean <- read_tsv('/net/pupil1/home/people/s195796/projects/Group_10_project/R/02_dat_clean_binary.tsv')
+#/net/pupil1/home/people/s194681/projects/Group_project_10/02_dat_clean.tsv
 ```
 
 Linear regression analysis
@@ -72,8 +72,9 @@ cancer_estimates <- cancer_estimates |>
 cancer_estimates <- cancer_estimates |>
   mutate(q.value = p.adjust(p.value),
          is_significant = case_when(q.value <= 0.05 ~ "yes",
-                                    q.value > 0.05 ~ "no"))
-cancer_estimates
+                                    q.value > 0.05 ~ "no")) |>
+  write_tsv(file = "/net/pupil1/home/people/s194681/projects/Group_project_10/03_dat_aug.tsv")
+
 
    
 
