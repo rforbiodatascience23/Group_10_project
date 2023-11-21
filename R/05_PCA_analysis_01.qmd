@@ -17,16 +17,17 @@ library(cowplot)
 ## Read data
 
 ```{r}
-cancer_dataset <- read_tsv("/net/pupil1/home/people/s195796/projects/Group_10_project/R/02_dat_clean.tsv")
+#cancer_dataset_clean <- read_tsv("/net/pupil1/home/people/s195796/projects#/Group_10_project/R/02_dat_clean.tsv")
+cancer_dataset_clean <- read_tsv("/net/pupil1/home/people/s194681/projects/Group_10_project_2/02_dat_clean.tsv")
 #/home/people/s223094/project/Group_project_10/R/02_dat_clean.tsv
-print(cancer_dataset)
+
 ```
 
 ```{r}
-cancer_dataset <- cancer_dataset |>
+cancer_dataset_clean <- cancer_dataset_clean |>
   select(!id)
 
-pca_fit <- cancer_dataset |> 
+pca_fit <- cancer_dataset_clean |> 
   select(where(is.numeric)) |> # retain only numeric columns
   prcomp(scale = TRUE) # do PCA on scaled data
 
@@ -34,7 +35,7 @@ pca_fit <- cancer_dataset |>
 
 ```{r}
 pca_fit |>
-  augment(cancer_dataset) |> # add original dataset back in
+  augment(cancer_dataset_clean) |> # add original dataset back in
   ggplot(aes(.fittedPC1, .fittedPC2, color = diagnosis)) + 
   geom_point(size = 1.5) +
   scale_color_manual(
