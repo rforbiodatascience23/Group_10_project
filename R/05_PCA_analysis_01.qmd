@@ -23,9 +23,7 @@ print(cancer_dataset)
 
 ```{r}
 cancer_dataset <- cancer_dataset |>
-  select(!id) |>
-  mutate(diagnosis = case_when(diagnosis == 0 ~ "M",
-    diagnosis == 1 ~ "B"))
+  select(!id)
 
 pca_fit <- cancer_dataset |> 
   select(where(is.numeric)) |> # retain only numeric columns
