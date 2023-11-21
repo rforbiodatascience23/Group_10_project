@@ -89,6 +89,10 @@ pl <- cancer_estimates |>
        y = "",
        title = "Parameters associated with breast cancer")
 
-print(pl)
+# Save the ggplot as a PNG file in the specified folder
+folder_path <- "/net/pupil1/home/people/s194681/projects/Group_10_project_2/results"
+file_name <- "forest_plot.png"
+ggsave(file.path(folder_path, file_name), pl, width = 8, height = 6, dpi = 300)
+
 
 ```
