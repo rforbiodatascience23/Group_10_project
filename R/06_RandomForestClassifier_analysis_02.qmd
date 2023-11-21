@@ -27,7 +27,7 @@ cancer_data_clean <- cancer_data_clean |>
 
 ```{r}
 # Set seed for reproducibility
-set.seed(123)
+set.seed(124)
 
 # Set up 5-fold cross-validation
 n <- nrow(cancer_data_clean)
@@ -82,18 +82,22 @@ for (i in seq_along(folds)) {
   # Append data for this fold to roc_data
   roc_data <- bind_rows(roc_data, roc_data_fold)
 }
+
 ```
 
 ## Visualize the performance
 
 ```{r}
 # Plot ROC curve using ggplot2
-ggplot(roc_data, aes(x = FPR, y = TPR, group = as.factor(Fold), color = as.factor(Fold))) +
-  geom_line(na.rm = TRUE) +
-  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
-  labs(title = "ROC Curve", x = "False Positive Rate", y = "True Positive Rate", color = "Fold") +
+roc_plot <- ggplot(roc_data, aes(x = FPR, y = TPR, group = as.factor(Fold), color = as.factor(Fold))) +
+  geom_line(na.rm = TRUE, linewidth = 1, alpha = 0.9) +
+  scale_color_brewer(palette="Paired") +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed",alpha = 0.5) +
+  labs(title = "ROC Curve of Random Forest Classifier", x = "False Positive Rate", y = "True Positive Rate", color = "Fold") +
   theme_minimal()
 
 # Display summary of roc_data
 summary(roc_data)
+roc_plot
+ggsave('~/Desktop/Group_10_project/results/roc_curve.png')
 ```
