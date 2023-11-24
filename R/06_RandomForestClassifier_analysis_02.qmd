@@ -15,7 +15,7 @@ library(randomForest)
 ```{r}
 # Assuming you have a data frame called cancer_data_clean
 data_folder <- '~/Desktop/'
-cancer_data_clean <- read.table(paste0(data_folder,'02_dat_clean.tsv'),sep = '\t',header = TRUE)
+cancer_data_clean <- read_tsv(paste0(data_folder,'02_dat_clean.tsv'))
 
 # Display unique values in the 'diagnosis' column
 cancer_data_clean <- cancer_data_clean |>
