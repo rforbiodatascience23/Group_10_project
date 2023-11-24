@@ -16,11 +16,12 @@ library(randomForest)
 # Assuming you have a data frame called cancer_data_clean
 data_folder <- '~/Desktop/'
 cancer_data_clean <- read_tsv(paste0(data_folder,'02_dat_clean.tsv'))
-
 # Display unique values in the 'diagnosis' column
 cancer_data_clean <- cancer_data_clean |>
   mutate(diagnosis = ifelse(diagnosis == 1, "B", ifelse(diagnosis == 0, "M", diagnosis))) |>
+  rename_with(~ gsub(" ", "_", .), everything()) |>
   mutate(diagnosis = as.factor(diagnosis))
+
 ```
 
 ## Random Forest Classifier
@@ -33,25 +34,19 @@ set.seed(124)
 n <- nrow(cancer_data_clean)
 indices <- sample(n)
 k <- 5
-# Create folds
+# Create folds using tibble
 fold_sizes <- rep(n %/% k, k)
 fold_sizes[1:(n %% k)] <- fold_sizes[1:(n %% k)] + 1
-cum_fold_sizes <- cumsum(fold_sizes)
-folds <- vector("list", length(fold_sizes))
-start_idx <- 1
-for (i in 1:length(fold_sizes)) {
-  end_idx <- cum_fold_sizes[i]
-  folds[[i]] <- indices[start_idx:end_idx]
-  start_idx <- end_idx + 1
-}
+folds <- tibble(indices = indices) |> 
+  mutate(fold = rep(seq_len(k), fold_sizes))
 
-# Initialize an empty data frame to store ROC data
-roc_data <- data.frame()
+# Initialize an empty tibble to store ROC data
+roc_data <- tibble()
 
 # Cross-validation
-for (i in seq_along(folds)) {
-  test_indices <- folds[[i]]
-  train_indices <- setdiff(seq_len(nrow(cancer_data_clean)), test_indices)
+for (i in seq_len(k)) {
+  test_indices <- filter(folds, fold == i) |> pull(indices)
+  train_indices <- filter(folds, fold != i) |> pull(indices)
   
   # Splitting data
   trainData <- cancer_data_clean |> slice(train_indices)
@@ -63,8 +58,8 @@ for (i in seq_along(folds)) {
   # Make predictions
   pred_probs <- predict(model, testData, type = "prob")
   
-  # Initialize an empty data frame to store ROC data for this fold
-  roc_data_fold <- data.frame()
+  # Initialize an empty tibble to store ROC data for this fold
+  roc_data_fold <- tibble()
   
   # Compute TPR and FPR for ROC
   for (threshold in seq(0, 1, by = 0.01)) {
@@ -76,13 +71,12 @@ for (i in seq_along(folds)) {
     fpr <- cm['M', 'B'] / sum(cm[, 'B'])
     
     # Append data to roc_data_fold
-    roc_data_fold <- bind_rows(roc_data_fold, data.frame(FPR = fpr, TPR = tpr, Threshold = threshold, Fold = i))
+    roc_data_fold <- bind_rows(roc_data_fold, tibble(FPR = fpr, TPR = tpr, Threshold = threshold, Fold = i))
   }
   
   # Append data for this fold to roc_data
   roc_data <- bind_rows(roc_data, roc_data_fold)
 }
-
 ```
 
 ## Visualize the performance
