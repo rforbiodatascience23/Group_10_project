@@ -17,23 +17,49 @@ Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796,
     - mean
     - SE 
     - worst
--   The state of the patients cancer is stated, whether it is benign or malignant.
+-   The state of the patients cancer is stated; benign (B, 1) or malignant (M, 0).
 :::
 :::
 
 
-::: {.column width="60%"}
+::: {.column width="40%"}
 
-A picture here of the general information
+- Area
+- Compactness
+- Concave points
+- Concavity
+- Fractal dimensions
+- Perimeter
+- Radius
+- Smoothness 
+- Symmetry
+- Texture
 
 :::
 ::::
 
 ## Materials and Method
 
+:::: columns
+::: {.column width="40%"}
+::: {.incremental .smaller}
+
+maybe some text
+
+:::
+:::
+
+
+::: {.column width="60%"}
+
 ![Work pipeline](R_pipeline.png)
 
-## Boxplot - outliers
+:::
+::::
+
+
+
+## Boxplot - outliers {.smaller}
 
 :::: {.columns}
 
@@ -70,7 +96,7 @@ A picture here of the general information
 ::::
 
 
-## Augment() of the data
+## Augment() of the data {.smaller}
 
 :::: {.columns}
 
@@ -81,12 +107,18 @@ A picture here of the general information
 :::
 
 ::: {.column width="40%"}
-Right column
+Linear regression of each variable
+
+- group variables to nest
+- mutate formula by mapping
+- mapping tidy function
+- unnest model to extract statistics 
+- add significance column based on q value
 :::
 
 ::::
 
-## Analysis 1 - PCA unsupervised
+## Analysis 1 - PCA unsupervised {.smaller}
 
 :::: {.columns}
 
@@ -104,11 +136,11 @@ Left column
 
 
 
-## Analysis 2 - Random Forest Classfier
+## Analysis 2 - Random Forest Classfier {.smalelr}
 
 The two analysis
 
-## Analysis 2 - ROC-Curve
+## Analysis 2 - ROC-Curve 
 
 Can we trust the model
 

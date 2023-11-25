@@ -342,19 +342,43 @@
 <li class="fragment">SE</li>
 <li class="fragment">worst</li>
 </ul></li>
-<li class="fragment">The state of the patients cancer is stated, whether it is benign or malignant.</li>
+<li class="fragment">The state of the patients cancer is stated; benign (B, 1) or malignant (M, 0).</li>
 </ul>
 </div>
-</div><div class="column" style="width:60%;">
-<p>A picture here of the general information</p>
+</div><div class="column" style="width:40%;">
+<ul>
+<li>Area</li>
+<li>Compactness</li>
+<li>Concave points</li>
+<li>Concavity</li>
+<li>Fractal dimensions</li>
+<li>Perimeter</li>
+<li>Radius</li>
+<li>Smoothness</li>
+<li>Symmetry</li>
+<li>Texture</li>
+</ul>
 </div>
 </div>
 </section>
 <section id="materials-and-method" class="slide level2">
 <h2>Materials and Method</h2>
-
-<img data-src="R_pipeline.png" class="r-stretch quarto-figure-center"><p class="caption">Work pipeline</p></section>
-<section id="boxplot---outliers" class="slide level2">
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="smaller">
+<p>maybe some text</p>
+</div>
+</div><div class="column" style="width:60%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="R_pipeline.png"></p>
+<p></p><figcaption>Work pipeline</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="boxplot---outliers" class="slide level2 smaller">
 <h2>Boxplot - outliers</h2>
 <div class="columns">
 <div class="column" style="width:40%;">
@@ -381,7 +405,7 @@
 </div>
 </div>
 </section>
-<section id="augment-of-the-data" class="slide level2">
+<section id="augment-of-the-data" class="slide level2 smaller">
 <h2>Augment() of the data</h2>
 <div class="columns">
 <div class="column" style="width:60%;">
@@ -392,11 +416,18 @@
 </figure>
 </div>
 </div><div class="column" style="width:40%;">
-<p>Right column</p>
+<p>Linear regression of each variable</p>
+<ul>
+<li>group variables to nest</li>
+<li>mutate formula by mapping</li>
+<li>mapping tidy function</li>
+<li>unnest model to extract statistics</li>
+<li>add significance column based on q value</li>
+</ul>
 </div>
 </div>
 </section>
-<section id="analysis-1---pca-unsupervised" class="slide level2">
+<section id="analysis-1---pca-unsupervised" class="slide level2 smaller">
 <h2>Analysis 1 - PCA unsupervised</h2>
 <div class="columns">
 <div class="column" style="width:40%;">
@@ -407,7 +438,7 @@
 </div>
 </div>
 </section>
-<section id="analysis-2---random-forest-classfier" class="slide level2">
+<section id="analysis-2---random-forest-classfier" class="slide level2 smalelr">
 <h2>Analysis 2 - Random Forest Classfier</h2>
 <p>The two analysis</p>
 </section>
