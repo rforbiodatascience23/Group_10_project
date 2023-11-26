@@ -5,12 +5,8 @@ editor: visual
 ---
 
 ```{r}
+library(tidymodels)
 library(tidyverse)
-library(purrr)
-if (!require(randomForest)) {
-  install.packages(randomForest)
-}
-library(randomForest)
 ```
 
 ## Data Preparation
@@ -28,71 +24,53 @@ cancer_data_clean <- cancer_data_clean |>
 ## Random Forest Classifier
 
 ```{r}
-set.seed(124)
+set.seed(123)
 
 # Set up 5-fold cross-validation
-n <- nrow(cancer_data_clean)
-indices <- sample(n)
-k <- 5
+cv_folds <- vfold_cv(cancer_data_clean, v = 5, strata = diagnosis)
 
-# Create folds
-fold_sizes <- rep(n %/% k, k)
-fold_sizes[1:(n %% k)] <- fold_sizes[1:(n %% k)] + 1
-folds <- tibble(indices = indices) |>
-  mutate(fold = rep(seq_len(k), fold_sizes))
+# Define the random forest model
+rf_spec <- rand_forest() |> 
+  set_engine("randomForest") |> 
+  set_mode("classification")
 
-# Function to perform cross-validation and calculate ROC metrics
-process_fold <- function(fold_id, data, folds) {
-  test_indices <- filter(folds, fold == fold_id) |> pull(indices)
-  train_indices <- filter(folds, fold != fold_id) |> pull(indices)
-  
-  trainData <- slice(data, train_indices)
-  testData <- slice(data, test_indices)
-  
-  model <- randomForest(diagnosis ~ ., data = trainData)
-  pred_probs <- predict(model, testData, type = "prob")
-  
-  # Function to compute TPR and FPR for each threshold
-  compute_roc_metrics <- function(threshold) {
-    predicted_class <- ifelse(pred_probs[, 'M'] > threshold, 'M', 'B')
-    cm <- table(Predicted = predicted_class, Actual = testData$diagnosis)
-    
-    tpr <- ifelse("M" %in% rownames(cm) && "M" %in% colnames(cm), cm['M', 'M'] / sum(cm[, 'M']), 0)
-    fpr <- ifelse("M" %in% rownames(cm) && "B" %in% colnames(cm), cm['M', 'B'] / sum(cm[, 'B']), 0)
-    
-    tibble(FPR = fpr, TPR = tpr, Threshold = threshold, Fold = fold_id)
-  }
-  
-  # Apply compute_roc_metrics function over each threshold
-  roc_data_fold <- map_dfr(seq(0, 1, by = 0.01), compute_roc_metrics)
-  return(roc_data_fold)
-}
+# Define the workflow
+rf_workflow <- workflow() |> 
+  add_model(rf_spec) |> 
+  add_formula(diagnosis ~ .)
 
-# Apply process_fold function over each fold and combine results
-roc_data <- map_dfr(seq_len(k), ~process_fold(.x, cancer_data_clean, folds))
+# Fit the random forest models
+fit_res <- fit_resamples(
+  rf_workflow,
+  cv_folds,
+  metrics = metric_set(roc_auc, accuracy),
+  control = control_resamples(save_pred = TRUE)
+)
+
+pred_res <- collect_predictions(fit_res)
+roc <- pred_res |>
+  group_by(id) |>
+  roc_curve(truth = diagnosis, .pred_B) |> 
+  ungroup()
+average_auc <- pred_res |>
+  group_by(id) |>
+  roc_auc(truth = diagnosis, .pred_B) |>
+  summarise(avg_auc = mean(.estimate))
 ```
 
 ## Visualize the performance
 
 ```{r}
 # Plot ROC curve using ggplot2
-roc_plot <- ggplot(roc_data, aes(x = FPR, 
-                                 y = TPR, 
-                                 group = as.factor(Fold), 
-                                 color = as.factor(Fold))) +
-  
-  geom_line(na.rm = TRUE, linewidth = 1, alpha = 0.9) +
-  
-  scale_color_brewer(palette="Paired") +
-  
-  geom_abline(slope = 1, intercept = 0, linetype = "dashed",alpha = 0.5) +
-  
-  labs(title = "ROC Curve of Random Forest Classifier", x = "False Positive Rate", y = "True Positive Rate", color = "Fold") +
-  
+roc_plot <- ggplot(roc, aes(x = 1 - specificity, y = sensitivity, color = as.factor(id))) +
+  geom_line() +  # Each fold's curve will have a different color
+  geom_abline(linetype = "dashed", color = "gray") +
+  scale_color_brewer(palette="Paired", name = "Fold") +
+  labs(title = "ROC Curves for Random Forest Classifier",
+       x = "False Positive Rate",
+       y = "True Positive Rate") +
   theme_minimal()
 
-# Display summary of roc_data
-summary(roc_data)
-roc_plot
+print(average_auc)
 ggsave('~/Desktop/Group_10_project/results/roc_curve.png')
 ```
