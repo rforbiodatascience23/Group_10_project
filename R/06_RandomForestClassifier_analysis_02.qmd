@@ -12,10 +12,7 @@ library(tidyverse)
 ## Data Preparation
 
 ```{r}
-# Assuming you have a data frame called cancer_data_clean
-data_folder <- '~/Desktop/'
 cancer_data_clean <- read_tsv(paste0(data_folder,'02_dat_clean.tsv'))
-# Display unique values in the 'diagnosis' column
 cancer_data_clean <- cancer_data_clean |>
   rename_with(~ gsub(" ", "_", .), everything()) |>
   mutate(diagnosis = as.factor(diagnosis))
@@ -61,15 +58,22 @@ average_auc <- pred_res |>
 ## Visualize the performance
 
 ```{r}
-# Plot ROC curve using ggplot2
 roc_plot <- ggplot(roc, aes(x = 1 - specificity, y = sensitivity, color = as.factor(id))) +
-  geom_line() +  # Each fold's curve will have a different color
+  geom_line() +
   geom_abline(linetype = "dashed", color = "gray") +
   scale_color_brewer(palette="Paired", name = "Fold") +
   labs(title = "ROC Curves for Random Forest Classifier",
        x = "False Positive Rate",
        y = "True Positive Rate") +
-  theme_minimal()
+  theme_minimal() +
+  theme(
+    text = element_text(size = 12),
+    plot.title = element_text(size = 14, face = "bold"),  
+    axis.title = element_text(size = 13), 
+    axis.text = element_text(size = 12),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 11)
+  )
 
 print(average_auc)
 ggsave('~/Desktop/Group_10_project/results/roc_curve.png')
