@@ -1,6 +1,6 @@
 ---
 title: "Analysis of Breast cancer samples"
-format: 
+format:
   revealjs:
     theme: serif
     smaller: true
