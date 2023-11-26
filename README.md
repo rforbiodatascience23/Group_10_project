@@ -1,11 +1,11 @@
 # Group_10_project
 ## Contributors
 
-Christina Christiansen s223094
-Chunxu Han s220311
-Matilde Uth s195796
-Michelle Sollok s194681
-Pelagia Derizioti s222822
+- Christina Christiansen s223094
+- Chunxu Han s220311
+- Matilde Uth s195796
+- Michelle Sollok s194681
+- Pelagia Derizioti s222822
 
 ## Overview
 The project seeks to reconstruct visual models based on a specific dataset. The primary goal is to enhance comprehension of the process involved in building these models and derive informed decisions and conclusions from the dataset
