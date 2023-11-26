@@ -345,7 +345,7 @@
 <li class="fragment">The state of the patients cancer is stated; benign (B, 1) or malignant (M, 0).</li>
 </ul>
 </div>
-</div><div class="column" style="width:40%;">
+</div><div class="column" style="width:60%;">
 <p><img data-src="data_overview.png"></p>
 </div>
 </div>
@@ -353,7 +353,7 @@
 <section id="materials-and-method" class="slide level2">
 <h2>Materials and Method</h2>
 <div class="columns">
-<div class="column" style="width:40%;">
+<div class="column" style="width:50%;">
 <div class="smaller">
 <ul>
 <li class="fragment"><p>Data was split into 3 files (joining)</p></li>
@@ -361,7 +361,7 @@
 <li class="fragment"><p>2 files are created: clean and clean_binary</p></li>
 </ul>
 </div>
-</div><div class="column" style="width:60%;">
+</div><div class="column" style="width:50%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
 <p><img data-src="R_pipeline.png"></p>
@@ -412,11 +412,11 @@
 <div class="smaller">
 <p>Linear regression of each variable</p>
 <ul>
-<li class="fragment">group variables to nest</li>
-<li class="fragment">mutate formula by mapping</li>
-<li class="fragment">mapping tidy function</li>
-<li class="fragment">unnest model to extract statistics</li>
-<li class="fragment">add significance column based on q value</li>
+<li class="fragment"><p>group variables to nest</p></li>
+<li class="fragment"><p>mutate formula by mapping</p></li>
+<li class="fragment"><p>mapping tidy function</p></li>
+<li class="fragment"><p>unnest model to extract statistics</p></li>
+<li class="fragment"><p>add significance column based on q value</p></li>
 </ul>
 </div>
 </div>
@@ -439,7 +439,7 @@
 </div>
 </div>
 </section>
-<section id="analysis-2---random-forest-classfier" class="slide level2 smalelr">
+<section id="analysis-2---random-forest-classfier" class="slide level2 smaller">
 <h2>Analysis 2 - Random Forest Classfier</h2>
 <div class="smaller">
 <p>Workflow of supervised classifier</p>
@@ -467,9 +467,47 @@
 </div>
 </div>
 </section>
-<section id="discussion" class="slide level2">
+<section id="discussion" class="slide level2 smaller">
 <h2>Discussion</h2>
-<p>Qu</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="smaller">
+<ul>
+<li>Malignant cases:
+<ol type="1">
+<li>Greater heterogeneity observed</li>
+<li>Diverse genetic and molecular profiles likely contribute</li>
+<li>reflects the complexity</li>
+</ol></li>
+<li>Benign cases:
+<ol type="1">
+<li>more similiarity in attributes</li>
+<li>more consistent set of features</li>
+</ol></li>
+<li>General trends:
+<ol type="1">
+<li>malignant tumors generally have higher values for most measurements</li>
+<li>highlights distinct patterns between malignant and benign cases</li>
+</ol></li>
+</ul>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="smaller">
+<ul>
+<li>Significant correlations:
+<ol type="1">
+<li>Positive correlation with radius, area, perimeter</li>
+<li>Radius has slight correlation with concavity and compactness</li>
+<li>Size-related parameters interconnected in tumor morphology</li>
+</ol></li>
+<li>Limited Correlation:
+<ol type="1">
+<li>Texture, symmetry, smoothness and fractal dimension show minimal correlation, suggest potential independence</li>
+</ol></li>
+</ul>
+</div>
+</div>
+</div>
 <div class="footer footer-default">
 
 </div>
@@ -500,13 +538,13 @@
       Reveal.initialize({
 'controlsAuto': true,
 'previewLinksAuto': false,
-'smaller': false,
+'smaller': true,
 'pdfSeparateFragments': false,
 'autoAnimateEasing': "ease",
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
-'smaller': false,
+'smaller': true,
  
         // Display controls in the bottom right corner
         controls: false,

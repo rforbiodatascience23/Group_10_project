@@ -3,6 +3,7 @@ title: "Analysis of Breast cancer samples"
 format: 
   revealjs:
     theme: serif
+    smaller: true
 editor: visual
 Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796, Michelle Sollok s194681, Pelagia Derizioti s222822
 ---
@@ -21,7 +22,7 @@ Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796,
 :::
 :::
 
-::: {.column width="40%"}
+::: {.column width="60%"}
 ![](data_overview.png)
 :::
 :::
@@ -29,7 +30,7 @@ Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796,
 ## Materials and Method
 
 ::: columns
-::: {.column width="40%"}
+::: {.column width="50%"}
 ::: {.incremental .smaller}
 - Data was split into 3 files (joining)
 
@@ -39,7 +40,7 @@ Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796,
 :::
 :::
 
-::: {.column width="60%"}
+::: {.column width="50%"}
 
 ![Workflow for project](R_pipeline.png)
 
@@ -90,9 +91,13 @@ Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796,
 Linear regression of each variable
 
 -   group variables to nest
+
 -   mutate formula by mapping
+
 -   mapping tidy function
+
 -   unnest model to extract statistics
+
 -   add significance column based on q value
 :::
 :::
@@ -120,9 +125,9 @@ Linear regression of each variable
 :::
 :::
 
-## Analysis 2 - Random Forest Classfier {.smalelr}
+## Analysis 2 - Random Forest Classfier {.smaller}
 
-::: {.incremental .smaller}
+::: {.smaller}
 Workflow of supervised classifier
 :::
 
@@ -146,6 +151,39 @@ Workflow of supervised classifier
 :::
 
 
-## Discussion
+## Discussion {.smaller}
 
-Qu
+:::: {.columns}
+
+::: {.column width="50%"}
+::: {.smaller}
+- Malignant cases:
+  1.   Greater heterogeneity observed
+  2.   Diverse genetic and molecular profiles likely contribute
+  3.   reflects the complexity
+
+- Benign cases:
+  1.   more similiarity in attributes
+  2.   more consistent set of features
+
+- General trends:
+  1.   malignant tumors generally have higher values for most measurements
+  2.   highlights distinct patterns between malignant and benign cases
+:::
+:::
+
+::: {.column width="50%"}
+::: {.smaller}
+- Significant correlations:
+  1.   Positive correlation with radius, area, perimeter
+  2.   Radius has slight correlation with concavity and compactness
+  3.   Size-related parameters interconnected in tumor morphology
+
+- Limited Correlation:
+  1.   Texture, symmetry, smoothness and fractal dimension show minimal correlation, suggest potential independence
+
+:::
+:::
+
+::::
+
