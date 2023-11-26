@@ -16,7 +16,7 @@ The project seeks to reconstruct visual models based on a specific dataset. The 
 3. create augment
 4. describe the data
 5. Analysis 1 - PCA unsupervised
-6. Analysis 2 - Supervised Machine learning
+6. Analysis 2 - Random Forest Classifier
 7. results - html files
 8. presentation
 
