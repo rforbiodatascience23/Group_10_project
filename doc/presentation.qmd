@@ -44,7 +44,10 @@ Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796,
 ::: {.column width="40%"}
 ::: {.incremental .smaller}
 
-maybe some text
+Cleaning data:
+- Data was split into 3 different files to demonstrate joining 
+- All non relevant symbols in colnames were removed to improve visual presentation
+- 2 files are created: clean_binary and clean
 
 :::
 :::
