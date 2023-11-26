@@ -1,8 +1,15 @@
 # Group_10_project
+## Contributors
 
-The project seeks to reconstruct visual models based on a specific dataset. The primary goal is to enhance comprehension of the process involved in building these models and derive informed decisions and conclusions from the dataset
+Christina Christiansen s223094
+Chunxu Han s220311
+Matilde Uth s195796
+Michelle Sollok s194681
+Pelagia Derizioti s222822
 
 ## Overview
+The project seeks to reconstruct visual models based on a specific dataset. The primary goal is to enhance comprehension of the process involved in building these models and derive informed decisions and conclusions from the dataset
+
 
 1. load the data
 2. clean the data
@@ -21,6 +28,8 @@ To induce this 'unclean' state, a new separator was introduced between each valu
 
 original data: https://www.kaggle.com/datasets/uciml/breast-cancer-wisconsin-data/data 
 
+The original data as we split it can be found here: https://wetransfer.com/downloads/141bb030f2c0eaf1f92107e2c03cf05220231126122519/f6cd46?fbclid=IwAR1CoksPbt2D67b4VrR0qSq9kWmDl3NxKWEcNhp84jGs34aviOpQmkPR_dA 
+
 ### Data Files
 
 Description of the three files created during the data preparation phase.
@@ -37,19 +46,5 @@ Describe the strategy employed to train and merge the divided data files back to
 
 Provide instructions on how to use the R scripts or functions included in the repository. Include any dependencies or system requirements.
 
-## Contributors
 
-List the contributors to the project and provide contact information if necessary.
-
-## License
-
-Specify the license under which the project is distributed.
-
-## Acknowledgments
-
-If you used external libraries, tools, or resources, acknowledge them here.
-
-## How to Contribute
-
-Provide information on how others can contribute to the project, including guidelines for submitting issues or pull requests.
 
