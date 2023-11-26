@@ -5,9 +5,8 @@ editor: visual
 ---
 
 ```{r}
+library(tidymodels)
 library(tidyverse)
-library(purrr)
-library(randomForest)
 ```
 
 ## Data Preparation
@@ -18,89 +17,60 @@ data_folder <- '~/Desktop/'
 cancer_data_clean <- read_tsv(paste0(data_folder,'02_dat_clean.tsv'))
 # Display unique values in the 'diagnosis' column
 cancer_data_clean <- cancer_data_clean |>
-  mutate(diagnosis = ifelse(diagnosis == 1, "B", ifelse(diagnosis == 0, "M", diagnosis))) |>
   rename_with(~ gsub(" ", "_", .), everything()) |>
   mutate(diagnosis = as.factor(diagnosis))
-
 ```
 
 ## Random Forest Classifier
 
 ```{r}
-# Set seed for reproducibility
-set.seed(124)
+set.seed(123)
 
 # Set up 5-fold cross-validation
-n <- nrow(cancer_data_clean)
-indices <- sample(n)
-k <- 5
+cv_folds <- vfold_cv(cancer_data_clean, v = 5, strata = diagnosis)
 
-# Create folds using tibble
-fold_sizes <- rep(n %/% k, k)
-fold_sizes[1:(n %% k)] <- fold_sizes[1:(n %% k)] + 1
-folds <- tibble(indices = indices) |> 
-  mutate(fold = rep(seq_len(k), fold_sizes))
+# Define the random forest model
+rf_spec <- rand_forest() |> 
+  set_engine("randomForest") |> 
+  set_mode("classification")
 
-# Initialize an empty tibble to store ROC data
-roc_data <- tibble()
+# Define the workflow
+rf_workflow <- workflow() |> 
+  add_model(rf_spec) |> 
+  add_formula(diagnosis ~ .)
 
-# Cross-validation
-for (i in seq_len(k)) {
-  test_indices <- filter(folds, fold == i) |> pull(indices)
-  train_indices <- filter(folds, fold != i) |> pull(indices)
-  
-  # Splitting data
-  trainData <- cancer_data_clean |> slice(train_indices)
-  testData <- cancer_data_clean |> slice(test_indices)
-  
-  # Train the model
-  model <- randomForest(diagnosis ~ ., data = trainData)
-  
-  # Make predictions
-  pred_probs <- predict(model, testData, type = "prob")
-  
-  # Initialize an empty tibble to store ROC data for this fold
-  roc_data_fold <- tibble()
-  
-  # Compute TPR and FPR for ROC
-  for (threshold in seq(0, 1, by = 0.01)) {
-    predicted_class <- ifelse(pred_probs[, 'M'] > threshold, 'M', 'B')
-    cm <- table(Predicted = factor(predicted_class, levels = c('B', 'M')),
-                Actual = factor(testData$diagnosis, levels = c('B', 'M')))
-    
-    tpr <- cm['M', 'M'] / sum(cm[, 'M'])
-    fpr <- cm['M', 'B'] / sum(cm[, 'B'])
-    
-    # Append data to roc_data_fold
-    roc_data_fold <- bind_rows(roc_data_fold, tibble(FPR = fpr, TPR = tpr, Threshold = threshold, Fold = i))
-  }
-  
-  # Append data for this fold to roc_data
-  roc_data <- bind_rows(roc_data, roc_data_fold)
-}
+# Fit the random forest models
+fit_res <- fit_resamples(
+  rf_workflow,
+  cv_folds,
+  metrics = metric_set(roc_auc, accuracy),
+  control = control_resamples(save_pred = TRUE)
+)
+
+pred_res <- collect_predictions(fit_res)
+roc <- pred_res |>
+  group_by(id) |>
+  roc_curve(truth = diagnosis, .pred_B) |> 
+  ungroup()
+average_auc <- pred_res |>
+  group_by(id) |>
+  roc_auc(truth = diagnosis, .pred_B) |>
+  summarise(avg_auc = mean(.estimate))
 ```
 
 ## Visualize the performance
 
 ```{r}
 # Plot ROC curve using ggplot2
-roc_plot <- ggplot(roc_data, aes(x = FPR, 
-                                 y = TPR, 
-                                 group = as.factor(Fold), 
-                                 color = as.factor(Fold))) +
-  
-  geom_line(na.rm = TRUE, linewidth = 1, alpha = 0.9) +
-  
-  scale_color_brewer(palette="Paired") +
-  
-  geom_abline(slope = 1, intercept = 0, linetype = "dashed",alpha = 0.5) +
-  
-  labs(title = "ROC Curve of Random Forest Classifier", x = "False Positive Rate", y = "True Positive Rate", color = "Fold") +
-  
+roc_plot <- ggplot(roc, aes(x = 1 - specificity, y = sensitivity, color = as.factor(id))) +
+  geom_line() +  # Each fold's curve will have a different color
+  geom_abline(linetype = "dashed", color = "gray") +
+  scale_color_brewer(palette="Paired", name = "Fold") +
+  labs(title = "ROC Curves for Random Forest Classifier",
+       x = "False Positive Rate",
+       y = "True Positive Rate") +
   theme_minimal()
 
-# Display summary of roc_data
-summary(roc_data)
-roc_plot
+print(average_auc)
 ggsave('~/Desktop/Group_10_project/results/roc_curve.png')
 ```
