@@ -7,6 +7,9 @@ editor: visual
 ```{r}
 library(tidyverse)
 library(purrr)
+if (!require(randomForest)) {
+  install.packages(randomForest)
+}
 library(randomForest)
 ```
 
@@ -18,16 +21,13 @@ data_folder <- '~/Desktop/'
 cancer_data_clean <- read_tsv(paste0(data_folder,'02_dat_clean.tsv'))
 # Display unique values in the 'diagnosis' column
 cancer_data_clean <- cancer_data_clean |>
-  mutate(diagnosis = ifelse(diagnosis == 1, "B", ifelse(diagnosis == 0, "M", diagnosis))) |>
   rename_with(~ gsub(" ", "_", .), everything()) |>
   mutate(diagnosis = as.factor(diagnosis))
-
 ```
 
 ## Random Forest Classifier
 
 ```{r}
-# Set seed for reproducibility
 set.seed(124)
 
 # Set up 5-fold cross-validation
@@ -35,49 +35,41 @@ n <- nrow(cancer_data_clean)
 indices <- sample(n)
 k <- 5
 
-# Create folds using tibble
+# Create folds
 fold_sizes <- rep(n %/% k, k)
 fold_sizes[1:(n %% k)] <- fold_sizes[1:(n %% k)] + 1
-folds <- tibble(indices = indices) |> 
+folds <- tibble(indices = indices) |>
   mutate(fold = rep(seq_len(k), fold_sizes))
 
-# Initialize an empty tibble to store ROC data
-roc_data <- tibble()
-
-# Cross-validation
-for (i in seq_len(k)) {
-  test_indices <- filter(folds, fold == i) |> pull(indices)
-  train_indices <- filter(folds, fold != i) |> pull(indices)
+# Function to perform cross-validation and calculate ROC metrics
+process_fold <- function(fold_id, data, folds) {
+  test_indices <- filter(folds, fold == fold_id) |> pull(indices)
+  train_indices <- filter(folds, fold != fold_id) |> pull(indices)
   
-  # Splitting data
-  trainData <- cancer_data_clean |> slice(train_indices)
-  testData <- cancer_data_clean |> slice(test_indices)
+  trainData <- slice(data, train_indices)
+  testData <- slice(data, test_indices)
   
-  # Train the model
   model <- randomForest(diagnosis ~ ., data = trainData)
-  
-  # Make predictions
   pred_probs <- predict(model, testData, type = "prob")
   
-  # Initialize an empty tibble to store ROC data for this fold
-  roc_data_fold <- tibble()
-  
-  # Compute TPR and FPR for ROC
-  for (threshold in seq(0, 1, by = 0.01)) {
+  # Function to compute TPR and FPR for each threshold
+  compute_roc_metrics <- function(threshold) {
     predicted_class <- ifelse(pred_probs[, 'M'] > threshold, 'M', 'B')
-    cm <- table(Predicted = factor(predicted_class, levels = c('B', 'M')),
-                Actual = factor(testData$diagnosis, levels = c('B', 'M')))
+    cm <- table(Predicted = predicted_class, Actual = testData$diagnosis)
     
-    tpr <- cm['M', 'M'] / sum(cm[, 'M'])
-    fpr <- cm['M', 'B'] / sum(cm[, 'B'])
+    tpr <- ifelse("M" %in% rownames(cm) && "M" %in% colnames(cm), cm['M', 'M'] / sum(cm[, 'M']), 0)
+    fpr <- ifelse("M" %in% rownames(cm) && "B" %in% colnames(cm), cm['M', 'B'] / sum(cm[, 'B']), 0)
     
-    # Append data to roc_data_fold
-    roc_data_fold <- bind_rows(roc_data_fold, tibble(FPR = fpr, TPR = tpr, Threshold = threshold, Fold = i))
+    tibble(FPR = fpr, TPR = tpr, Threshold = threshold, Fold = fold_id)
   }
   
-  # Append data for this fold to roc_data
-  roc_data <- bind_rows(roc_data, roc_data_fold)
+  # Apply compute_roc_metrics function over each threshold
+  roc_data_fold <- map_dfr(seq(0, 1, by = 0.01), compute_roc_metrics)
+  return(roc_data_fold)
 }
+
+# Apply process_fold function over each fold and combine results
+roc_data <- map_dfr(seq_len(k), ~process_fold(.x, cancer_data_clean, folds))
 ```
 
 ## Visualize the performance
