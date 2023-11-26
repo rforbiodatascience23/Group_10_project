@@ -9,63 +9,48 @@ Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796,
 
 ## Introduction {.smaller}
 
-:::: columns
+::: columns
 ::: {.column width="40%"}
 ::: {.incremental .smaller}
 -   The data set is based on breast cancer sample.
 -   Split into 10 parameters for:
-    - mean
-    - SE 
-    - worst
+    -   mean
+    -   SE
+    -   worst
 -   The state of the patients cancer is stated; benign (B, 1) or malignant (M, 0).
 :::
 :::
 
-
 ::: {.column width="40%"}
-
-- Area
-- Compactness
-- Concave points
-- Concavity
-- Fractal dimensions
-- Perimeter
-- Radius
-- Smoothness 
-- Symmetry
-- Texture
-
+![](data_overview.png)
 :::
-::::
+:::
 
 ## Materials and Method
 
-:::: columns
+::: columns
 ::: {.column width="40%"}
 ::: {.incremental .smaller}
+- Data was split into 3 files (joining)
 
-Cleaning data:
-- Data was split into 3 different files to demonstrate joining 
-- All non relevant symbols in colnames were removed to improve visual presentation
-- 2 files are created: clean_binary and clean
+- All non relevant symbols in colnames were removed
 
+- 2 files are created: clean and clean_binary
 :::
 :::
-
 
 ::: {.column width="60%"}
 
-![Work pipeline](R_pipeline.png)
+![Workflow for project](R_pipeline.png)
 
 :::
-::::
+:::
 
 
 
 ## Boxplot - outliers {.smaller}
 
-:::: {.columns}
-
+::: columns
 ::: {.column width="40%"}
 ![](../results/boxplot_se.png)
 
@@ -73,81 +58,94 @@ Cleaning data:
 :::
 
 ::: {.column width="60%"}
-![](../results/boxplot_mean.png) 
+![](../results/boxplot_mean.png)
 :::
-
-::::
-
-
+:::
 
 ## Correlation in parameters {.smaller}
 
-:::: {.columns}
-
+::: columns
 ::: {.column width="40%"}
 ::: {.incremental .smaller}
--   Step 1
--   step 2
--   Step 3
+-   Correlation matrix - on numeric clean_data
+-   Matrix - tibble()
+-   Re-arranged to plot correlation using heatmap
 :::
 :::
 
 ::: {.column width="60%"}
 ![](../results/Heatmap.png)
 :::
-
-::::
-
+:::
 
 ## Augment() of the data {.smaller}
 
-:::: {.columns}
-
+::: columns
 ::: {.column width="60%"}
-
 ![Forest plot](../results/forest_plot.png)
-
 :::
 
 ::: {.column width="40%"}
+::: {.incremental .smaller}
 Linear regression of each variable
 
-- group variables to nest
-- mutate formula by mapping
-- mapping tidy function
-- unnest model to extract statistics 
-- add significance column based on q value
+-   group variables to nest
+-   mutate formula by mapping
+-   mapping tidy function
+-   unnest model to extract statistics
+-   add significance column based on q value
 :::
-
-::::
+:::
+:::
 
 ## Analysis 1 - PCA unsupervised {.smaller}
 
-:::: {.columns}
-
+::: columns
 ::: {.column width="40%"}
-Left column
+-   PCA performed on numeric, scaled data
+
+-   PC1 + PC2 plotted and colored based on diagnosis
+
+-   Nice clustering of the two diagnosis
+
+-   Plot showing variance explained by each PC
+
+-   more than 40% explained by PC1
 :::
 
 ::: {.column width="60%"}
-![](../results/pca_plot.png){width=350}
+![](../results/pca_plot.png){width="350"}
 
-![](../results/variation_in_data.png){width=350}
+![](../results/variation_in_data.png){width="350"}
 :::
-
-::::
-
-
+:::
 
 ## Analysis 2 - Random Forest Classfier {.smalelr}
 
-The two analysis
+::: {.incremental .smaller}
+Workflow of supervised classifier
+:::
 
-## Analysis 2 - ROC-Curve 
+![Forest plot](random_forest_flowchart.png)
 
-Can we trust the model
+## Analysis 2 - ROC-Curve
+
+::: columns
+::: {.column width="60%"}
+![Forest plot](../results/roc_curve.png)
+:::
+
+::: {.column width="40%"}
+::: {.incremental .smaller}
+-   Good performance (Hugging top left corner)
+-   All 5 fold consistently position
+-   For diverse patient cases -> model exhibit reliability predictions
+
+:::
+:::
+:::
+
 
 ## Discussion
 
 Qu
-

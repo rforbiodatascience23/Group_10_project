@@ -23,13 +23,13 @@ Dataset: Breast Cancer Wisconsin (Diagnostic) Data Set. The dataset is made to p
 For these each of these attributes 3 numbers were calculated: mean, standard error and the worst (mean of the 3 largest values). These 3 categories of datapoints are assembled to one big dataset as seen below.
 
 ```{r}
-# Christina path: /home/people/s223094/project/Group_project_10/R/02_dat_clean.tsv
+# Christina path_ikke binary: /home/people/s223094/project/Group_project_10/R/02_dat_clean.tsv
 # matilde path: "/net/pupil1/home/people/s195796/projects/Group_10_project/R/02_dat_clean.tsv"
 #cancer_dataset <- read_tsv("/home/people/s223094/project/Group_project_10/R/02_dat_clean.tsv")
 #cancer_dataset <- read_tsv("/net/pupil1/home/people/s195796/projects/Group_10_project/R/02_dat_clean.tsv")
-cancer_dataset_clean <- read_tsv("/net/pupil1/home/people/s194681/projects/Group_10_project_2/02_dat_clean.tsv")
+cancer_dataset_clean <- read_tsv("/home/people/s223094/project/Group_project_10/R/02_dat_clean.tsv")
 
-cancer_dataset_clean_binary <- read_tsv("/net/pupil1/home/people/s194681/projects/Group_10_project_2/02_dat_clean_binary.tsv")
+cancer_dataset_clean_binary <- read_tsv("/home/people/s223094/project/Group_project_10/R/02_dat_clean.tsv")
 ```
 
 ## Heatmap of correlation between parameters
@@ -89,6 +89,14 @@ folder_path <- "/home/people/s223094/project/Group_project_10/results"
 
 ```
 
+Loading in function
+
+```{r}
+source('../R/99_proj_func.R')
+```
+
+Making boxplot
+
 ```{r}
 # Name of specific figure
 file_name <- "boxplot_mean.png"
@@ -96,27 +104,20 @@ file_name <- "boxplot_mean.png"
 # set seed
 set.seed(1234)
 
-# gather the specific parameters
-# Standardize the values within each level of Parameter
-cancer_dataset_clean_binary_long <- gather(cancer_dataset_clean_binary , key = "Parameter", value = "Value", `radius mean`, `texture mean`, `perimeter mean`, `area mean`, `smoothness mean`, `concavity mean`, `concave points mean`, `symmetry mean`, `fractal dimension mean`, `compactness mean`) |>
-  group_by(Parameter) |>
-  mutate(StandardizedValue = scale(Value))
 
-# Standardize the values within each level of Parameter
-#cancer_dataset_clean_binary_long <- cancer_dataset_clean_binary_long |>
-#  group_by(Parameter) |>
-#  mutate(StandardizedValue = scale(Value))
+# Gather the mean values
+pivot_longer_mean <- pivot_standardized('mean', cancer_dataset_clean)
+
 
 # Customize boxplot
-gg <- ggplot(data = cancer_dataset_clean_binary_long, 
-       aes(x = Parameter, y = StandardizedValue, fill = as.factor(diagnosis))) +
+gg <- ggplot(data = pivot_longer_mean, 
+       aes(x = Parameter, y = StandardizedValue, fill = factor(diagnosis))) +
   
   geom_boxplot(alpha = 0.8, 
                color = "black", 
                size = 0.2) +
   
-    scale_fill_manual(values = c("0" = "#Ff1000", "1" = "#0012B2"),
-                    breaks = c("0", "1"),
+    scale_fill_manual(values = c("M" = "#Ff1000", "B" = "#0012B2"),
                     labels = c("malignant", "benign")) + 
   
   labs(y = "Standardized Value", 
@@ -141,23 +142,19 @@ file_name <- "boxplot_se.png"
 # set seed
 set.seed(1234)
 
-# gather the specific parameters
-# Standardize the values within each level of Parameter
-cancer_dataset_clean_binary_long <- gather(cancer_dataset_clean_binary, key = "Parameter", value = "Value", `radius se`, `texture se`, `perimeter se`, `area se`, `smoothness se`, `concavity se`, `concave points se`, `symmetry se`, `fractal dimension se`, `compactness se`) |>
-  group_by(Parameter) |>
-  mutate(StandardizedValue = scale(Value))
+# Gather the mean values
+pivot_longer_se <- pivot_standardized('se', cancer_dataset_clean)
 
 
 # Customize boxplot
-gg <- ggplot(data = cancer_dataset_clean_binary_long, 
-       aes(x = Parameter, y = StandardizedValue, fill = as.factor(diagnosis))) +
+gg <- ggplot(data = pivot_longer_se, 
+       aes(x = Parameter, y = StandardizedValue, fill = factor(diagnosis))) +
   
   geom_boxplot(alpha = 0.8, 
                color = "black", 
                size = 0.2) +
   
-  scale_fill_manual(values = c("0" = "#Ff1000", "1" = "#0012B2"),
-                    breaks = c("0", "1"),
+  scale_fill_manual(values = c("M" = "#Ff1000", "B" = "#0012B2"),
                     labels = c("malignant", "benign")) + 
   
   labs(y = "Standardized Value", 
@@ -184,22 +181,19 @@ file_name <- "boxplot_worst.png"
 # set seed
 set.seed(1234)
 
-# gather specific parameters
-cancer_dataset_clean_long_binary <- gather(cancer_dataset_clean_binary, key = "Parameter", value = "Value", `radius worst`, `texture worst`, `perimeter worst`, `area worst`, `smoothness worst`, `concavity worst`, `concave points worst`, `symmetry worst`, `fractal dimension worst`, `compactness worst`) |>
-  group_by(Parameter) |>
-  mutate(StandardizedValue = scale(Value))
+# Gather the mean values
+pivot_longer_worst <- pivot_standardized('worst', cancer_dataset_clean)
 
 
 # Customize boxplot
-gg <- ggplot(data = cancer_dataset_clean_binary_long, 
-       aes(x = Parameter, y = StandardizedValue, fill = as.factor(diagnosis))) +
+gg <- ggplot(data = pivot_longer_worst, 
+       aes(x = Parameter, y = StandardizedValue, fill = factor(diagnosis))) +
   
   geom_boxplot(alpha = 0.8, 
                color = "black", 
                size = 0.2) +
   
-  scale_fill_manual(values = c("0" = "#Ff1000", "1" = "#0012B2"),
-                    breaks = c("0", "1"),
+  scale_fill_manual(values = c("M" = "#Ff1000", "B" = "#0012B2"),
                     labels = c("malignant", "benign")) + 
   
   labs(y = "Standardized Value", 

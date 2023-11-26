@@ -346,18 +346,7 @@
 </ul>
 </div>
 </div><div class="column" style="width:40%;">
-<ul>
-<li>Area</li>
-<li>Compactness</li>
-<li>Concave points</li>
-<li>Concavity</li>
-<li>Fractal dimensions</li>
-<li>Perimeter</li>
-<li>Radius</li>
-<li>Smoothness</li>
-<li>Symmetry</li>
-<li>Texture</li>
-</ul>
+<p><img data-src="data_overview.png"></p>
 </div>
 </div>
 </section>
@@ -366,13 +355,17 @@
 <div class="columns">
 <div class="column" style="width:40%;">
 <div class="smaller">
-<p>Cleaning data: - Data was split into 3 different files to demonstrate joining - All non relevant symbols in colnames were removed to improve visual presentation - 2 files are created: clean_binary and clean</p>
+<ul>
+<li class="fragment"><p>Data was split into 3 files (joining)</p></li>
+<li class="fragment"><p>All non relevant symbols in colnames were removed</p></li>
+<li class="fragment"><p>2 files are created: clean and clean_binary</p></li>
+</ul>
 </div>
 </div><div class="column" style="width:60%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
 <p><img data-src="R_pipeline.png"></p>
-<p></p><figcaption>Work pipeline</figcaption><p></p>
+<p></p><figcaption>Workflow for project</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -395,9 +388,9 @@
 <div class="column" style="width:40%;">
 <div class="smaller">
 <ul>
-<li class="fragment">Step 1</li>
-<li class="fragment">step 2</li>
-<li class="fragment">Step 3</li>
+<li class="fragment">Correlation matrix - on numeric clean_data</li>
+<li class="fragment">Matrix - tibble()</li>
+<li class="fragment">Re-arranged to plot correlation using heatmap</li>
 </ul>
 </div>
 </div><div class="column" style="width:60%;">
@@ -416,14 +409,16 @@
 </figure>
 </div>
 </div><div class="column" style="width:40%;">
+<div class="smaller">
 <p>Linear regression of each variable</p>
 <ul>
-<li>group variables to nest</li>
-<li>mutate formula by mapping</li>
-<li>mapping tidy function</li>
-<li>unnest model to extract statistics</li>
-<li>add significance column based on q value</li>
+<li class="fragment">group variables to nest</li>
+<li class="fragment">mutate formula by mapping</li>
+<li class="fragment">mapping tidy function</li>
+<li class="fragment">unnest model to extract statistics</li>
+<li class="fragment">add significance column based on q value</li>
 </ul>
+</div>
 </div>
 </div>
 </section>
@@ -431,7 +426,13 @@
 <h2>Analysis 1 - PCA unsupervised</h2>
 <div class="columns">
 <div class="column" style="width:40%;">
-<p>Left column</p>
+<ul>
+<li><p>PCA performed on numeric, scaled data</p></li>
+<li><p>PC1 + PC2 plotted and colored based on diagnosis</p></li>
+<li><p>Nice clustering of the two diagnosis</p></li>
+<li><p>Plot showing variance explained by each PC</p></li>
+<li><p>more than 40% explained by PC1</p></li>
+</ul>
 </div><div class="column" style="width:60%;">
 <p><img data-src="../results/pca_plot.png" width="350"></p>
 <p><img data-src="../results/variation_in_data.png" width="350"></p>
@@ -440,11 +441,31 @@
 </section>
 <section id="analysis-2---random-forest-classfier" class="slide level2 smalelr">
 <h2>Analysis 2 - Random Forest Classfier</h2>
-<p>The two analysis</p>
-</section>
+<div class="smaller">
+<p>Workflow of supervised classifier</p>
+</div>
+
+<img data-src="random_forest_flowchart.png" class="r-stretch quarto-figure-center"><p class="caption">Forest plot</p></section>
 <section id="analysis-2---roc-curve" class="slide level2">
 <h2>Analysis 2 - ROC-Curve</h2>
-<p>Can we trust the model</p>
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="../results/roc_curve.png"></p>
+<p></p><figcaption>Forest plot</figcaption><p></p>
+</figure>
+</div>
+</div><div class="column" style="width:40%;">
+<div class="smaller">
+<ul>
+<li class="fragment">Good performance (Hugging top left corner)</li>
+<li class="fragment">All 5 fold consistently position</li>
+<li class="fragment">For diverse patient cases -&gt; model exhibit reliability predictions</li>
+</ul>
+</div>
+</div>
+</div>
 </section>
 <section id="discussion" class="slide level2">
 <h2>Discussion</h2>
