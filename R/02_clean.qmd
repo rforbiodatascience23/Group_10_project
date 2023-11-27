@@ -4,6 +4,8 @@ format: html
 editor: visual
 ---
 
+## Loading libraries
+
 ```{r}
 library(tidyverse)
 library(dplyr)
@@ -19,31 +21,36 @@ First we load in the functions
 source("99_proj_func.R")
 ```
 
+### Cleaning 1. data part
+
 ```{r}
 # Running on the first part of data (mean)
-cancer_data_1 <- cleaning_data("/home/people/s223094/project/Group_project_10/R/data_1.csv")
+cancer_data_1 <- cleaning_data("/path/to/R/data_1.csv")
 ```
 
-Second part:
+### Cleaning 2. data part
 
 ```{r}
 # Running on second part of data (SE)
-cancer_data_2 <- cleaning_data("/home/people/s223094/project/Group_project_10/R/data_2.csv")
+cancer_data_2 <- cleaning_data("/path/to/R/data_2.csv")
 
 ```
 
-Third part:
+### Cleaning 3. data part
 
 ```{r}
 # Running on third part of data (Worst)
-cancer_data_3 <- cleaning_data("/home/people/s223094/project/Group_project_10/R/data_3.csv")
+cancer_data_3 <- cleaning_data("/path/to/R/data_3.csv")
 ```
 
-Join dataset
+### Joining the data parts into one dataset
 
 ```{r}
-output_path = "/home/people/s223094/project/Group_project_10/02_dat_clean.tsv" # Where output should be added
+output_path = "/path/to/02_dat_clean.tsv" # Where output should be added
 
+output_path_binary = "/path/to/02_dat_clean_binary.tsv" # Where output should be added
+
+# Joining the 3 data parts
 cancer_dataset_clean <- cancer_data_1 |> 
   full_join(cancer_data_2, by = 'id') |> 
   full_join(cancer_data_3, by = 'id')|>
@@ -51,7 +58,7 @@ cancer_dataset_clean <- cancer_data_1 |>
   write_tsv(file = output_path) |>
   mutate(diagnosis = case_when(diagnosis == "M" ~ 0,
     diagnosis == "B" ~ 1)) |> 
-  write_tsv(file = output_path)
+  write_tsv(file = output_path_binary) # Making dataset with binary diagnosis (1 = Benign, 0 = Malignant)
 
 
 ```
