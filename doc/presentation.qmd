@@ -155,7 +155,7 @@ Workflow of supervised classifier
     2.  Diverse genetic and molecular profiles likely contribute
     3.  reflects the complexity
 -   Benign cases:
-    1.  more similiarity in attributes
+    1.  more similarity in attributes
     2.  more consistent set of features
 -   General trends:
     1.  malignant tumors generally have higher values for most measurements
