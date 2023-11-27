@@ -7,12 +7,13 @@ editor: visual
 ```{r}
 library(tidymodels)
 library(tidyverse)
+library(randomForest)
 ```
 
 ## Data Preparation
 
 ```{r}
-cancer_data_clean <- read_tsv(paste0(data_folder,'02_dat_clean.tsv'))
+cancer_data_clean <- read_tsv("/path/to/R/02_dat_clean.tsv")
 cancer_data_clean <- cancer_data_clean |>
   rename_with(~ gsub(" ", "_", .), everything()) |>
   mutate(diagnosis = as.factor(diagnosis))
@@ -75,6 +76,6 @@ roc_plot <- ggplot(roc, aes(x = 1 - specificity, y = sensitivity, color = as.fac
     legend.text = element_text(size = 11)
   )
 
-print(average_auc)
-ggsave('~/Desktop/Group_10_project/results/roc_curve.png')
+
+ggsave('~/results/roc_curve.png')
 ```
