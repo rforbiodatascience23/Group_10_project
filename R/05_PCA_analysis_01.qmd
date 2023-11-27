@@ -10,31 +10,40 @@ editor: visual
 
 ```{r}
 library(tidyverse)
-library(broom)  # devtools::install_github("tidymodels/broom")
+library(broom)  
 library(cowplot)
 ```
 
 ## Read data
 
 ```{r}
-#cancer_dataset_clean <- read_tsv("/net/pupil1/home/people/s195796/projects#/Group_10_project/R/02_dat_clean.tsv")
-cancer_dataset_clean <- read_tsv("/net/pupil1/home/people/s194681/projects/Group_10_project_2/02_dat_clean.tsv")
-#/home/people/s223094/project/Group_project_10/R/02_dat_clean.tsv
-
+cancer_dataset_clean <- read_tsv("/net/pupil1/home/people/s195796/projects/Group_10_project/R/02_dat_clean.tsv")
 ```
+
+## Making Principal component analysis
 
 ```{r}
 cancer_dataset_clean <- cancer_dataset_clean |>
   select(!id)
 
 pca_fit <- cancer_dataset_clean |> 
-  select(where(is.numeric)) |> # retain only numeric columns
+  select(!diagnosis) |> # retain only numeric columns
   prcomp(scale = TRUE) # do PCA on scaled data
 
 ```
 
+## Plotting PCA
+
 ```{r}
-pca_fit |>
+# Specify the folder path and filename for the saved plot
+folder_path <- "/net/pupil1/home/people/s195796/projects/Project_group_10/results"
+```
+
+```{r}
+
+file_name <- "PCA.png"
+
+PCA_plot <- pca_fit |>
   augment(cancer_dataset_clean) |> # add original dataset back in
   ggplot(aes(.fittedPC1, .fittedPC2, color = diagnosis)) + 
   geom_point(size = 1.5) +
@@ -49,6 +58,9 @@ pca_fit |>
          y = "PC2"
        ) +
   theme(plot.title = element_text(hjust = 0.5))
+
+# Save the ggplot as a PNG file in the specified folder
+ggsave(file.path(folder_path, file_name), PCA_plot, width = 8, height = 6, dpi = 300)
 ```
 
 ## Looking at the data in PC coordinates
@@ -95,8 +107,13 @@ pca_fit |>
   tidy(matrix = "eigenvalues")
 ```
 
+## Plotting variation in data shown by the PC
+
 ```{r}
-pca_fit |>
+
+file_name <- "Variation_in_data.png"
+
+PCA_variation <- pca_fit |>
   tidy(matrix = "eigenvalues") |>
   ggplot(aes(PC, percent)) +
   geom_col(fill = "#300e9d", alpha = 0.8) +
@@ -109,6 +126,9 @@ pca_fit |>
   labs(title = "Variation in data",
        ) +
   theme(plot.title = element_text(hjust = 0.5))
+
+# Save the ggplot as a PNG file in the specified folder
+ggsave(file.path(folder_path, file_name), PCA_variation, width = 8, height = 6, dpi = 300)
 ```
 
 The first component captures more than 40% of the variation in the data
