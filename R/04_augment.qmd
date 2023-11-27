@@ -4,20 +4,25 @@ format: html
 editor: visual
 ---
 
+## Loading libraries
+
 ```{r}
 library(tidyverse)
 library(dplyr)
 library(broom)
 library(purrr)
-cancer_dataset_clean <- read_tsv('/net/pupil1/home/people/s194681/projects/Group_10_project_2/02_dat_clean_binary.tsv')
-#/net/pupil1/home/people/s194681/projects/Group_project_10/02_dat_clean.tsv
 ```
 
-Linear regression analysis
-
-Creating long version of the dataset, so it's possible to group variables. dplyt pipeline: Variables are grouped, nested and ungrouped.
+## Loading data
 
 ```{r}
+cancer_dataset_clean <- read_tsv('/path/to/R/02_dat_clean_binary.tsv')
+```
+
+## Linear regression analysis
+
+```{r}
+# Creating long version of the dataset, so it's possible to group variables
 cancer_dataset_clean_aug_long_nested <- cancer_dataset_clean |> 
   pivot_longer(cols = contains(c('mean', 'worst', 'se')),
                names_to = "variables",
@@ -25,12 +30,11 @@ cancer_dataset_clean_aug_long_nested <- cancer_dataset_clean |>
   group_by(variables) |>
   nest() |>
   ungroup()
-
-
- 
 ```
 
-We group to ensure we are working per variable and add model object that will be calculated based on each variable
+## Making linear model
+
+We group to ensure we are working per variable and add model object that will be calculated based on each variable.
 
 ```{r}
 cancer_dataset_clean_aug_long_nested <- cancer_dataset_clean_aug_long_nested |> 
@@ -38,21 +42,17 @@ cancer_dataset_clean_aug_long_nested <- cancer_dataset_clean_aug_long_nested |>
   mutate(model_object = map(.x = data,
                    .f = ~lm(formula = values ~ diagnosis,
                             data = .x)))
-cancer_dataset_clean_aug_long_nested
-```
 
-We map the tidy function to the model object variable
-
-```{r}
-
+# We map the tidy function to the model object variable
 cancer_dataset_clean_aug_long_nested <- cancer_dataset_clean_aug_long_nested |> 
   mutate(model_object_tidy = map(.x = model_object,
                                  .f = ~tidy(x = .x,
                                             conf.int = TRUE,
                                             conf.level = 0.95)))
 
-cancer_dataset_clean_aug_long_nested
 ```
+
+## Unnesting model
 
 Unnesting the model to reveal all values. Then we select what we want to see, and ungroup the data. We can also add an informational column that reveals if the variable is significant or not.
 
@@ -66,14 +66,21 @@ cancer_estimates <- cancer_estimates |>
   select(variables, p.value, estimate, conf.low, conf.high) |> 
   ungroup()
 
+```
 
+## Adding columns for significance
 
+```{r}
 cancer_estimates <- cancer_estimates |>
   mutate(q.value = p.adjust(p.value),
          is_significant = case_when(q.value <= 0.05 ~ "yes",
                                     q.value > 0.05 ~ "no")) |>
-  write_tsv(file = "/net/pupil1/home/people/s194681/projects/Group_project_10/03_dat_aug.tsv")
+  write_tsv(file = "/path/to/R/03_dat_aug.tsv")
+```
 
+## Plotting forest plot
+
+```{r}
 pl <- cancer_estimates |> 
   filter(is_significant == "yes") |> 
   ggplot(aes(x = estimate,
@@ -90,9 +97,9 @@ pl <- cancer_estimates |>
        title = "Parameters associated with breast cancer")
 
 # Save the ggplot as a PNG file in the specified folder
-folder_path <- "/net/pupil1/home/people/s194681/projects/Group_10_project_2/results"
+folder_path <- "/path/to/results"
 file_name <- "forest_plot.png"
-ggsave(file.path(folder_path, file_name), pl, width = 8, height = 6, dpi = 300)
 
+ggsave(file.path(folder_path, file_name), pl, width = 8, height = 6, dpi = 300)
 
 ```
