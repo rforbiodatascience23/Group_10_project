@@ -8,9 +8,9 @@
 - Pelagia Derizioti s222822
 
 ## Overview
-The project seeks to reconstruct visual models based on a specific dataset. The primary goal is to enhance comprehension of the process involved in building these models and derive informed decisions and conclusions from the dataset
+The project seeks to reconstruct visual models based on a specific dataset. The primary goal is to enhance comprehension of the process involved in building these models and derive informed decisions and conclusions from the dataset.
 
-
+Parameters found in the dataset (Mean, SE, Worst):
 1. load the data
 2. clean the data
 3. create augment
@@ -24,7 +24,7 @@ The project seeks to reconstruct visual models based on a specific dataset. The 
 
 The dataset was sourced from Kaggle, representing a typical dataset employed for model training and visualizations. As the data was initially clean, deliberate measures were taken to introduce imperfections for training purposes.
 
-To induce this 'unclean' state, a new separator was introduced between each value, observation, and parameter, resulting in a clustering effect within the CSV file. Subsequently, the dataset was partitioned into three distinct files. This division was necessitated by the repetition of each of the 10 measurements in the document, which are categorized into mean, standard error (SE), and worst.
+To induce this 'unclean' state, the dataset was partitioned into three distinct files. This division was necessitated by the repetition of each of the 10 measurements in the document, which are categorized into mean, standard error (SE), and worst.
 
 original data: https://www.kaggle.com/datasets/uciml/breast-cancer-wisconsin-data/data 
 
@@ -40,11 +40,21 @@ Description of the three files created during the data preparation phase.
 
 ## Data Integration and Cleaning
 
-Describe the strategy employed to train and merge the divided data files back together. Highlight the importance of this step in the overall data cleaning process.
+As the data is split into three different files, we performed the merge function to join them back together. The overall cleaning of the input will look as following:
+A function to clean each of the three data files
+- load in the data
+- split by specific delimiter (',')
+- save as tsv
+
+When each data file have been cleaned with the cleaning function, they are merge together in a single function.
 
 ## Usage
 
-Provide instructions on how to use the R scripts or functions included in the repository. Include any dependencies or system requirements.
+The repository is build up with a number system, indicating which order each Quatro file should be run and names of output during the process is also named accordingly. As the output from cleaning and augment, have the initiated start number of the Quatro file they originate from. 
+
+The 00_all.qmd file will include each of the Quatro files in the repository in the order they should the correct order.
+
+Each of the paths inside each Quatro file needs to be replaced by the true path of the user. These are currently written as "/path/to/...".
 
 
 

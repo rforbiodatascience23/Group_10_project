@@ -2,6 +2,7 @@
 title: "Analysis of Breast cancer samples"
 format:
   revealjs:
+    embed-resources: true
     theme: serif
     smaller: true
 editor: visual
