@@ -9,53 +9,49 @@ library(tidyverse)
 library(dplyr)
 ```
 
+## First clean: make it tidy
 
-Seperated dataset: First part 
+In the first clean, the quotation marks have been removed and each value has been given its own cell.
+
+First we load in the functions
+
 ```{r}
-cancer_data_1 <- read_tsv('/net/pupil1/home/people/s194681/projects/Group_project_10/01_dat_load_1.tsv') |> 
-  as_tibble() |>
-  rename_all(tolower) |>
-  rename_all(~ gsub("[^[:alnum:]]", " ", .)) |>
-  mutate_all(~ str_replace_all(., '"', '')) 
+source("99_proj_func.R")
+```
 
-
+```{r}
+# Running on the first part of data (mean)
+cancer_data_1 <- cleaning_data("/home/people/s223094/project/Group_project_10/R/data_1.csv")
 ```
 
 Second part:
-```{r}
-cancer_data_2 <- read_tsv('/net/pupil1/home/people/s194681/projects/Group_project_10/01_dat_load_2.tsv') |> 
-  as_tibble() |>
-  rename_all(tolower) |>
-  rename_all(~ gsub("[^[:alnum:]]", " ", .)) |>
-  mutate_all(~ str_replace_all(., '"', ''))  
 
+```{r}
+# Running on second part of data (SE)
+cancer_data_2 <- cleaning_data("/home/people/s223094/project/Group_project_10/R/data_2.csv")
 
 ```
 
-
 Third part:
-```{r}
 
-cancer_data_3 <- read_tsv('/net/pupil1/home/people/s194681/projects/Group_project_10/01_dat_load_3.tsv') |> 
-  as_tibble() |>
-  rename_all(tolower) |>
-  rename_all(~ gsub("[^[:alnum:]]", " ", .)) |>
-  mutate_all(~ str_replace_all(., '"', '')) 
+```{r}
+# Running on third part of data (Worst)
+cancer_data_3 <- cleaning_data("/home/people/s223094/project/Group_project_10/R/data_3.csv")
 ```
 
 Join dataset
 
 ```{r}
+output_path = "/home/people/s223094/project/Group_project_10/02_dat_clean.tsv" # Where output should be added
 
 cancer_dataset_clean <- cancer_data_1 |> 
-  full_join(cancer_data_2, by = 'id ') |> 
-  full_join(cancer_data_3, by = 'id ')|>
+  full_join(cancer_data_2, by = 'id') |> 
+  full_join(cancer_data_3, by = 'id')|>
   as_tibble() |>
-  write_tsv(file = "/net/pupil1/home/people/s194681/projects/Group_project_10/02_dat_clean.tsv") |>
-  mutate(`diagnosis ` = case_when(`diagnosis `== "M" ~ 0,
-    `diagnosis `== "B" ~ 1)) |> 
-  write_tsv(file = "/net/pupil1/home/people/s194681/projects/Group_project_10/02_dat_clean_binary.tsv")
+  write_tsv(file = output_path) |>
+  mutate(diagnosis = case_when(diagnosis == "M" ~ 0,
+    diagnosis == "B" ~ 1)) |> 
+  write_tsv(file = output_path)
+
 
 ```
-
-
