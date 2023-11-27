@@ -6,56 +6,47 @@ editor: visual
     wrap: 72
 ---
 
+## Loading libraries
+
 ```{r}
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
 ```
 
-Dataset: Breast Cancer Wisconsin (Diagnostic) Data Set. The dataset is made to predict whether breast cancer in patients are benign or malignant. The attributes are computed from a digitized image of a fine needle aspirate of a breast mass. They describe characteristics of the cell nuclei present in the image. There are 31 different attributes from these images based on 569 patients. The class distribution is 357 benign and 212 malignant cases. There are no NA's. Each patient case is distinguished with an ID number and a diagnostic attribute: B for benign and M for malignant. For each cell nucleus there are 10 features computed:\
-- Radius\
-- Standard deviation of the gray-scaled values (texture)\
-- Perimeter - Area - Local variation in radius lengths (smoothness)\
-- Local variation in radius lengths (compactness)\
-- Concave portions of the contour (concavity)\
-- Number of concave portions in contour (concave points)\
-- Symmetry - Fractal dimension\
-For these each of these attributes 3 numbers were calculated: mean, standard error and the worst (mean of the 3 largest values). These 3 categories of datapoints are assembled to one big dataset as seen below.
+## Loading data
 
 ```{r}
-# Christina path_ikke binary: /home/people/s223094/project/Group_project_10/R/02_dat_clean.tsv
-# matilde path: "/net/pupil1/home/people/s195796/projects/Group_10_project/R/02_dat_clean.tsv"
-#cancer_dataset <- read_tsv("/home/people/s223094/project/Group_project_10/R/02_dat_clean.tsv")
-#cancer_dataset <- read_tsv("/net/pupil1/home/people/s195796/projects/Group_10_project/R/02_dat_clean.tsv")
-cancer_dataset_clean <- read_tsv("/home/people/s223094/project/Group_project_10/R/02_dat_clean.tsv")
+cancer_dataset_clean <- read_tsv("/path/to/data/R/02_dat_clean.tsv")
 
-cancer_dataset_clean_binary <- read_tsv("/home/people/s223094/project/Group_project_10/R/02_dat_clean.tsv")
 ```
 
 ## Heatmap of correlation between parameters
 
 ```{r}
 # Specify the folder path and filename for the saved plot
-folder_path2 <- "/net/pupil1/home/people/s194681/projects/Group_10_project_2/results"
+folder_path <- "/path/to/results"
 ```
 
 ```{r}
 file_name <- "Heatmap.png"
 
+# Creating correlation matrix
 correlation_matrix <- cancer_dataset_clean |> 
-  select(!id) |>
-  select_if(is.numeric) |> 
-  cor()
+  select(!c(diagnosis, id)) |> # removes id and non-numeric values
+  cor() # do correlaton on data
 
-myrownames <- rownames(correlation_matrix)
+myrownames <- rownames(correlation_matrix) # saves row names
 
+# Rearrange data structure
 tidy_correlation <- correlation_matrix |>
-  as_tibble() |> 
-  mutate(myrownames) |>
-  pivot_longer(cols = contains(c('mean', 'worst', 'se')),
+  as_tibble() |> # makes correlation matrix into tibble
+  mutate(myrownames) |> # add the row names
+  pivot_longer(cols = contains(c('mean', 'worst', 'se')), # rearrange data
                names_to = "variables",
                values_to = "correlation")
 
+# Plotting heatmap
 ggplot_heatmap <- ggplot(data = tidy_correlation,
                          mapping = aes(x = variables,
                                        y = myrownames,
@@ -76,18 +67,10 @@ ggplot_heatmap <- ggplot(data = tidy_correlation,
 print(ggplot_heatmap)
 
 # Save the ggplot as a PNG file in the specified folder
-ggsave(file.path(folder_path2, file_name), ggplot_heatmap, width = 8, height = 6, dpi = 300)
+ggsave(file.path(folder_path, file_name), ggplot_heatmap, width = 8, height = 6, dpi = 300)
 ```
 
 ## Boxplot over data
-
-### path for saved png
-
-```{r}
-# Specify the folder path and filename for the saved plot
-folder_path <- "/home/people/s223094/project/Group_project_10/results"
-
-```
 
 Loading in function
 
@@ -101,11 +84,8 @@ Making boxplot
 # Name of specific figure
 file_name <- "boxplot_mean.png"
 
-# set seed
-set.seed(1234)
 
-
-# Gather the mean values
+# Gather the mean values using function from 99_proj_func.R
 pivot_longer_mean <- pivot_standardized('mean', cancer_dataset_clean)
 
 
@@ -167,7 +147,6 @@ gg <- ggplot(data = pivot_longer_se,
     plot.margin = margin(2, 1, 1, 1, "cm"),
     axis.text.x = element_text(angle = 45, hjust = 1)
   )
-
 # Save the ggplot as a PNG file in the specified folder
 ggsave(file.path(folder_path, file_name), gg, width = 8, height = 6, dpi = 300)
 
