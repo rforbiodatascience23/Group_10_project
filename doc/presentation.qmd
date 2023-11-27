@@ -75,7 +75,7 @@ Author: Christina Christiansen s223094, Chunxu Han s220311, Matilde Uth s195796,
 :::
 :::
 
-## Augment() of the data {.smaller}
+## Augment of the data {.smaller}
 
 ::: columns
 ::: {.column width="60%"}
